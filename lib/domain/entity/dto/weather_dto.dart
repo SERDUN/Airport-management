@@ -20,10 +20,9 @@
 /// wind_variable_direction : [{"repr":"150","value":150,"spoken":"one five zero"},{"repr":"230","value":230,"spoken":"two three zero"}]
 /// units : {"altimeter":"hPa","altitude":"ft","temperature":"C","visibility":"m","wind_speed":"m/s"}
 
-class Weather_dto {
+class WeatherDto {
   Meta _meta;
   Altimeter _altimeter;
-  List<dynamic> _clouds;
   String _flightRules;
   List<dynamic> _other;
   Visibility _visibility;
@@ -45,7 +44,7 @@ class Weather_dto {
 
   Meta get meta => _meta;
   Altimeter get altimeter => _altimeter;
-  List<dynamic> get clouds => _clouds;
+  //List<dynamic> get clouds => _clouds;
   String get flightRules => _flightRules;
   List<dynamic> get other => _other;
   Visibility get visibility => _visibility;
@@ -65,7 +64,7 @@ class Weather_dto {
   List<Wind_variable_direction> get windVariableDirection => _windVariableDirection;
   Units get units => _units;
 
-  Weather_dto({
+  WeatherDto({
       Meta meta, 
       Altimeter altimeter, 
       List<dynamic> clouds, 
@@ -89,7 +88,7 @@ class Weather_dto {
       Units units}){
     _meta = meta;
     _altimeter = altimeter;
-    _clouds = clouds;
+   // _clouds = clouds;
     _flightRules = flightRules;
     _other = other;
     _visibility = visibility;
@@ -110,32 +109,27 @@ class Weather_dto {
     _units = units;
 }
 
-  Weather_dto.fromJson(dynamic json) {
+  WeatherDto.fromJson(dynamic json) {
     _meta = json["meta"] != null ? Meta.fromJson(json["meta"]) : null;
     _altimeter = json["altimeter"] != null ? Altimeter.fromJson(json["altimeter"]) : null;
-    if (json["clouds"] != null) {
-      _clouds = [];
-      json["clouds"].forEach((v) {
-        _clouds.add(dynamic.fromJson(v));
-      });
-    }
-    _flightRules = json["flight_rules"];
-    if (json["other"] != null) {
-      _other = [];
-      json["other"].forEach((v) {
-        _other.add(dynamic.fromJson(v));
-      });
-    }
+
+    // _flightRules = json["flight_rules"];
+    // if (json["other"] != null) {
+    //   _other = [];
+    //   json["other"].forEach((v) {
+    //     _other.add(dynamic.fromJson(v));
+    //   });
+    // }
     _visibility = json["visibility"] != null ? Visibility.fromJson(json["visibility"]) : null;
     _windDirection = json["wind_direction"] != null ? Wind_direction.fromJson(json["windDirection"]) : null;
     _windGust = json["wind_gust"];
     _windSpeed = json["wind_speed"] != null ? Wind_speed.fromJson(json["windSpeed"]) : null;
-    if (json["wx_codes"] != null) {
-      _wxCodes = [];
-      json["wx_codes"].forEach((v) {
-        _wxCodes.add(dynamic.fromJson(v));
-      });
-    }
+    // if (json["wx_codes"] != null) {
+    //   _wxCodes = [];
+    //   json["wx_codes"].forEach((v) {
+    //     _wxCodes.add(dynamic.fromJson(v));
+    //   });
+    // }
     _raw = json["raw"];
     _sanitized = json["sanitized"];
     _station = json["station"];
@@ -143,12 +137,12 @@ class Weather_dto {
     _remarks = json["remarks"];
     _dewpoint = json["dewpoint"] != null ? Dewpoint.fromJson(json["dewpoint"]) : null;
     _remarksInfo = json["remarks_info"] != null ? Remarks_info.fromJson(json["remarksInfo"]) : null;
-    if (json["runway_visibility"] != null) {
-      _runwayVisibility = [];
-      json["runway_visibility"].forEach((v) {
-        _runwayVisibility.add(dynamic.fromJson(v));
-      });
-    }
+    // if (json["runway_visibility"] != null) {
+    //   _runwayVisibility = [];
+    //   json["runway_visibility"].forEach((v) {
+    //     _runwayVisibility.add(dynamic.fromJson(v));
+    //   });
+    // }
     _temperature = json["temperature"] != null ? Temperature.fromJson(json["temperature"]) : null;
     if (json["wind_variable_direction"] != null) {
       _windVariableDirection = [];
@@ -167,9 +161,9 @@ class Weather_dto {
     if (_altimeter != null) {
       map["altimeter"] = _altimeter.toJson();
     }
-    if (_clouds != null) {
-      map["clouds"] = _clouds.map((v) => v.toJson()).toList();
-    }
+    // if (_clouds != null) {
+    //   map["clouds"] = _clouds.map((v) => v.toJson()).toList();
+    // }
     map["flight_rules"] = _flightRules;
     if (_other != null) {
       map["other"] = _other.map((v) => v.toJson()).toList();
