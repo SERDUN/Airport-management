@@ -1,5 +1,6 @@
 import 'package:Aevius/presenter/common/ui/logo_widget.dart';
 import 'package:Aevius/presenter/pages/main_routes.dart';
+import 'package:Aevius/presenter/pages/root/root_navigation_page.dart';
 import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,12 +29,23 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // onGenerateRoute: (RouteSettings settings) {
-      //   switch (settings.name) {
-      //     default:  GetIt.I.get<BlocProvider<SplashBloc>>()l
-      //   }
-      // },
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case MainNavigatorRoutes.home:
+            return MaterialPageRoute(
+              builder: (context) => RootPage(),
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (context) => GetIt.I.get<BlocProvider<SplashBloc>>(),
+            );
+        }
+      },
       home: GetIt.I.get<BlocProvider<SplashBloc>>(),
     );
+
+
   }
+
+
 }

@@ -18,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     _bloc = BlocProvider.of<SplashBloc>(context);
-    _bloc.add(CheckPermissionLocationEvent());
+    _bloc.add(RequestPermissionLocationEvent());
     super.initState();
   }
 
@@ -31,14 +31,11 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void actionOpenHome() {
-    Navigator.pushReplacementNamed(context, MainNavigatorRoutes.root);
+    Navigator.pushReplacementNamed(context, MainNavigatorRoutes.home);
   }
 
   @override
   Widget build(BuildContext context) {
-    //  return buildPage();
-    // return Scaffold(
-    body:
     return Scaffold(
       body: Container(
         child: Column(
@@ -51,36 +48,37 @@ class _SplashPageState extends State<SplashPage> {
               ),
               BlocListener<SplashBloc, SplashState>(
                 listener: (ctx, state) {
+                  print("current state: " + state.toString());
                   if (state is LocationAllow) {
                     actionOpenHome();
                   }
                 },
                 child: BlocBuilder<SplashBloc, SplashState>(
                   builder: (ctx, state) {
-
                     switch (state.runtimeType) {
                       case PermissionLocationInitial:
                         return BaseIndicator();
                       case LocationAllow:
                         return BaseIndicator();
 
-                    // return ProgressIndicatorWidget();
+                      // return ProgressIndicatorWidget();
                       case LocationDenny:
-                        return BaseIndicator();
+                        return OutlinedButton(
+                          child: Text("Add access for current location"),
+                          onPressed: () => actionRequestForLocation(),
+                        );
 
-                    // return buildScaffold(
+                      // return buildScaffold(
                       //     buttonTitle: "Turn on location",
                       //     call: actionRequestForLocation);
                       case LocationDennyForever:
-                        return BaseIndicator();
+                        return OutlinedButton(
+                          child: Text("Open setting"),
+                          onPressed: () => actionOpenSettings(),
+                        );
 
-                    // return buildScaffold(
-                      //     buttonTitle: "Setting", call: actionOpenSettings);
                       default:
                         return BaseIndicator();
-
-                    // return buildScaffold(
-                      //     buttonTitle: "Setting", call: actionOpenSettings);
                     }
                   },
                 ),
