@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'flights/flights_page.dart';
+
 class RootPage extends StatefulWidget {
   @override
   _RootPageState createState() => _RootPageState();
@@ -50,10 +52,7 @@ class _RootPageState extends State<RootPage>
   Widget getCurrentPage(int index) {
     switch (_selectedIndex) {
       case 0:
-        return Text(
-          'Index 0',
-          style: optionStyle,
-        );
+        return FlightsPage();
 
       default:
         return Text(
