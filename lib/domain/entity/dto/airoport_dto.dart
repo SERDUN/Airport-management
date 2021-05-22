@@ -11,6 +11,11 @@
 /// phone : ""
 /// timezone : "Asia/Makassar"
 
+List<AirportDTO> airportToList(List list) => new List<AirportDTO>.from(list.map(
+        (x)
+=> AirportDTO.fromJson(x)));
+
+
 class AirportDTO {
   String _gmt;
   String _codeIataAirport;

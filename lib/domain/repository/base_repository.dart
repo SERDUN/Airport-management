@@ -3,7 +3,7 @@ import 'package:Aevius/domain/entity/dto/weather_dto.dart';
 import 'package:Aevius/domain/entity/models/error/either.dart';
 import 'package:Aevius/domain/entity/models/error/failures.dart';
 
-abstract class AuthRepository {
+abstract class BaseRepository {
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng);
 

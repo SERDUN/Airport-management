@@ -1,13 +1,24 @@
+import 'package:Aevius/presenter/pages/root/flights/airports_bloc.dart';
+import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FlightsPage extends StatefulWidget {
+class AirportsPage extends StatefulWidget {
   @override
-  _FlightsPageState createState() => _FlightsPageState();
+  _AirportsPageState createState() => _AirportsPageState();
 }
 
-class _FlightsPageState extends State<FlightsPage> {
+class _AirportsPageState extends State<AirportsPage> {
   TextEditingController _controller = TextEditingController();
+  AirportsBloc _bloc;
+
+  @override
+  void initState() {
+    _bloc = BlocProvider.of<AirportsBloc>(context);
+    _bloc.add(LoadNearbyAirports());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +47,28 @@ class _FlightsPageState extends State<FlightsPage> {
               ),
             ),
           ]),
-        )
+        ),
+        buildNearbyAirportsPage()
       ],
     ));
+  }
+
+  Widget buildNearbyAirportsPage() {
+    return BlocListener<AirportsBloc, AirportsState>(
+      listener: (ctx, state) {
+        print("current state: " + state.toString());
+        if (state is LocationAllow) {
+          //actionOpenHome();
+        }
+      },
+      child: BlocBuilder<AirportsBloc, AirportsState>(
+        builder: (ctx, state) {
+          return Container(
+              margin: EdgeInsets.all(16),
+              child: Text("Nearby "
+                  "airports"));
+        },
+      ),
+    );
   }
 }

@@ -9,30 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class RestClient {
   Dio dio = new Dio();
-  SharedPreferences _pref;
   Connectivity _connectivity;
+  final String baseUrl;
 
-  RestClient(this._pref) {
-    dio.options.baseUrl = base_url[env];
+  RestClient(this.baseUrl) {
+    //dio.options.baseUrl = base_url[env];
+    dio.options.baseUrl = baseUrl;
     dio.options.connectTimeout = 30000; //30s
     dio.options.receiveTimeout = 30000;
     _connectivity = new Connectivity();
-    // onSendInterceptors();
   }
-
-  // void onSendInterceptors() {
-  //   dio.interceptors.add(InterceptorsWrapper(
-  //     onRequest: (options) {
-  //       var token = _pref.getString(TOKEN);
-  //       if (token != null && token.isNotEmpty) {
-  //         options.headers["Authorization"] = "Token $token";
-  //       }
-  //       print(
-  //           "Request: ${options.baseUrl + options.path} -  ${options.data.toString()}");
-  //       return options;
-  //     },
-  //   ));
-  // }
 
   Future<Response> post(String path,
       {dynamic data, CancelToken cancelToken}) async {
