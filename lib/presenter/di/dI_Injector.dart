@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Aevius/config/env.dart';
 import 'package:Aevius/data/repository/base_repository.dart';
 import 'package:Aevius/data/repository/location_repository.dart';
@@ -24,13 +26,17 @@ import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/flights/airports_page.dart';
 import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/root/saved/saved_page.dart';
+import 'package:Aevius/presenter/pages/root/settings/setting_page.dart';
+import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/splash_page.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
 import 'package:Aevius/presenter/pages/weather/weather_page.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DiInjector {
@@ -51,10 +57,27 @@ class DiInjector {
   }
 
   static Future initRepository() async {
+
+    final options = CacheOptions(
+      store: MemCacheStore(),
+      // Default.
+      policy: CachePolicy.request,
+      hitCacheOnErrorExcept: [401, 403],
+      maxStale: const Duration(days: 7),
+      priority: CachePriority.high,
+      cipher: null,
+      keyBuilder: CacheOptions.defaultCacheKeyBuilder,
+      allowPostMethod: false,
+    );
+
     var sharedPreferences = await SharedPreferences.getInstance();
     RestClient restClientAirPorts =
         RestClient("http://aviation-edge.com/v2/public");
     RestClient restClientWeather = RestClient("https://avwx.rest/api");
+    restClientAirPorts.dio.interceptors.add(PrettyDioLogger());
+    restClientAirPorts.dio.interceptors
+        .add(DioCacheInterceptor(options: options));
+    restClientWeather.dio.interceptors.add(PrettyDioLogger());
 
     GetIt.I.registerSingleton<LocalStorage>(LocalStorage(sharedPreferences));
 
@@ -62,12 +85,10 @@ class DiInjector {
 
     GetIt.I.registerLazySingleton<LocationRepository>(
         () => LocationRepositoryImpl());
-    GetIt.I.registerLazySingleton<BaseRepository>(() => BaseRepositoryImpl(
-        aviationKey,
-        weatherKey,
-        restClientAirPorts,
-        restClientWeather,
-        GetIt.I.get<LocalStorage>()));
+    GetIt.I.registerLazySingleton<BaseRepository>(
+      () => BaseRepositoryImpl(aviationKey, weatherKey, restClientAirPorts,
+          restClientWeather, GetIt.I.get<LocalStorage>()),
+    );
 
     return Future.value();
   }
@@ -101,8 +122,14 @@ class DiInjector {
 
   static Future injectPages() {
     GetIt.I.registerFactory<BlocProvider<SavedBloc>>(() => BlocProvider(
-          create: (BuildContext context) => SavedBloc(),
+          create: (BuildContext context) =>
+              SavedBloc(GetIt.I.get<GetAirportsFromBookmarkUseCase>()),
           child: SavedPage(),
+        ));
+
+    GetIt.I.registerFactory<BlocProvider<SettingsBloc>>(() => BlocProvider(
+          create: (BuildContext context) => SettingsBloc(),
+          child: SettingPage(),
         ));
 
     GetIt.I.registerFactory<BlocProvider<SplashBloc>>(() => BlocProvider(
@@ -113,7 +140,8 @@ class DiInjector {
 
     GetIt.I.registerFactoryParam<BlocProvider<WeatherBloc>, WeatherModel, void>(
         (model, _) => BlocProvider(
-              create: (BuildContext context) => WeatherBloc(model),
+              create: (BuildContext context) => WeatherBloc(
+                  model, GetIt.I.get<AddAirportToBookmarkUseCase>()),
               child: WeatherPage(),
             ));
 

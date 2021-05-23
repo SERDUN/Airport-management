@@ -1,7 +1,9 @@
 import 'package:Aevius/presenter/common/ui/logo_widget.dart';
 import 'package:Aevius/presenter/pages/main_routes.dart';
+import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/root_navigation_page.dart';
 import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
+import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +39,11 @@ class MyApp extends StatelessWidget {
           case MainNavigatorRoutes.home:
             //todo move injection here
             return MaterialPageRoute(
-              builder: (context) => RootPage(),
+              builder: (context) => RootPage(
+                airports: GetIt.I.get<BlocProvider<AirportsBloc>>(),
+                bookmark: GetIt.I.get<BlocProvider<SavedBloc>>(),
+                settings: GetIt.I.get<BlocProvider<SettingsBloc>>(),
+              ),
             );
           case MainNavigatorRoutes.weather:
             return MaterialPageRoute(

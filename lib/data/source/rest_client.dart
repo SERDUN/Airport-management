@@ -30,11 +30,6 @@ class RestClient {
       try {
         Response response =
             await dio.post(path, data: data, cancelToken: cancelToken);
-        print("URL:" +
-            response.request.baseUrl +
-            response.request.path +
-            " - Response: " +
-            response.data.toString());
 
         return response;
       } catch (e) {
@@ -73,11 +68,6 @@ class RestClient {
       try {
         Response response = await dio.get(path,
             cancelToken: cancelToken, options: options, queryParameters: param);
-        print("URL:" +
-            response.request.baseUrl +
-            response.request.path +
-            " - Response: " +
-            response.data.toString());
         return response;
       } catch (e) {
         if (e is DioError) {
@@ -111,11 +101,6 @@ class RestClient {
       try {
         Response response =
             await dio.put(path, data: data, cancelToken: cancelToken);
-        print("URL:" +
-            response.request.baseUrl +
-            response.request.path +
-            " - Response: " +
-            response.data.toString());
         return response;
       } catch (e) {
         if (e is DioError) {
@@ -149,11 +134,6 @@ class RestClient {
       try {
         Response response =
             await dio.patch(path, data: data, cancelToken: cancelToken);
-        print("URL:" +
-            response.request.baseUrl +
-            response.request.path +
-            " - Response: " +
-            response.data.toString());
         return response;
       } catch (e) {
         if (e is DioError) {
@@ -188,11 +168,6 @@ class RestClient {
       try {
         Response response =
             await dio.delete(path, data: data, cancelToken: cancelToken);
-        print("URL:" +
-            response.request.baseUrl +
-            response.request.path +
-            " - Response: " +
-            response.data.toString());
         return response;
       } catch (e) {
         if (e is DioError) {

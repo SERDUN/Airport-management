@@ -1,12 +1,14 @@
 import 'package:Aevius/data/source/local_storage.dart';
 import 'package:Aevius/data/source/rest_client.dart';
 import 'package:Aevius/domain/entity/dto/airoport_dto.dart';
+import 'package:Aevius/domain/entity/dto/airport_error_dto.dart';
 import 'package:Aevius/domain/entity/dto/weather_dto.dart';
 import 'package:Aevius/domain/entity/models/error/default_error.dart';
 import 'package:Aevius/domain/entity/models/error/either.dart';
 import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class BaseRepositoryImpl extends BaseRepository {
   final String aviationKey;
@@ -16,15 +18,24 @@ class BaseRepositoryImpl extends BaseRepository {
   final LocalStorage localStorage;
 
   BaseRepositoryImpl(this.aviationKey, this.weatherKey, this.restClientAirPorts,
-      this.restClientWeather, this.localStorage);
+      this.restClientWeather, this.localStorage, );
 
   @override
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng) async {
     Response response = await restClientAirPorts.get(
-        "/nearby?key=$aviationKey&lat=46.482952&lng=30.712481&distance=100");
+        "/nearby?key=$aviationKey&lat=46.482952&lng=30.712481&distance=100",);
     if (response.statusCode < 300) {
-      return Right(airportToList(response.data));
+      try {
+        return Right(airportToList(response.data));
+      } catch (e) {
+        try {
+          var failure = AirportErrorDTO.fromJson(response.data);
+          return Future.value(Left(ErrorMessage(failure.error)));
+        } catch (e) {
+          return Future.value(Left(ErrorMessage(e.toString())));
+        }
+      }
     } else {
       var serverFailure = ServerFailure(
           response.statusCode, response.data, response.statusMessage)

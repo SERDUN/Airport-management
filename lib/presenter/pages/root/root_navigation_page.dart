@@ -1,6 +1,7 @@
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/root/settings/setting_page.dart';
+import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,6 +11,13 @@ import 'package:get_it/get_it.dart';
 import 'flights/airports_page.dart';
 
 class RootPage extends StatefulWidget {
+  final Widget airports;
+  final Widget bookmark;
+  final Widget settings;
+
+  const RootPage({Key key, this.airports, this.bookmark, this.settings})
+      : super(key: key);
+
   @override
   _RootPageState createState() => _RootPageState();
 }
@@ -17,12 +25,6 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-
-  List<Widget> pages = [
-    GetIt.I.get<BlocProvider<AirportsBloc>>(),
-    GetIt.I.get<BlocProvider<SavedBloc>>(),
-    SettingPage()
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -39,7 +41,22 @@ class _RootPageState extends State<RootPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: pages[_selectedIndex],
+        child: Stack(
+          children: [
+            Offstage(
+              child: widget.airports,
+              offstage: _selectedIndex != 0,
+            ),
+            Offstage(
+              child: widget.bookmark,
+              offstage: _selectedIndex != 1,
+            ),
+            Offstage(
+              child: widget.settings,
+              offstage: _selectedIndex != 2,
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
