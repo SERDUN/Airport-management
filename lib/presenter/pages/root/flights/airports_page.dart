@@ -1,15 +1,18 @@
 import 'package:Aevius/presenter/common/ui/base_indicator.dart';
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
-import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
+import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../main_routes.dart';
 
 class AirportsPage extends StatefulWidget {
   @override
   _AirportsPageState createState() => _AirportsPageState();
 }
 
+// todo handle error
 class _AirportsPageState extends State<AirportsPage> {
   TextEditingController _controller = TextEditingController();
   AirportsBloc _bloc;
@@ -72,11 +75,16 @@ class _AirportsPageState extends State<AirportsPage> {
           if (state is AirportsLoaded) {
             return Expanded(
                 child: ListView.builder(
-
               itemCount: state.airports.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('${state.airports[index].name}'),
+                return InkWell(
+                  child: ListTile(
+                    title: Text('${state.airports[index].name}'),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, MainNavigatorRoutes.weather);
+                  },
                 );
               },
             ));

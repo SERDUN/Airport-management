@@ -1,5 +1,5 @@
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
-import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
+import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

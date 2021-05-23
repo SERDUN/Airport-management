@@ -22,6 +22,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
     AirportsEvent event,
   ) async* {
     //add map and useCase
+    //todo add handling error
     if (event is LoadNearbyAirports) {
       var location = await locationRepository.getCurrentLocation();
       var airports = await baseRepository.getNearbyAirports(

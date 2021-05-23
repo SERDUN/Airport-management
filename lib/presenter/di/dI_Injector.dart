@@ -6,8 +6,10 @@ import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/flights/airports_page.dart';
-import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
+import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/splash_page.dart';
+import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
+import 'package:Aevius/presenter/pages/weather/weather_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -41,6 +43,12 @@ class DiInjector {
           create: (BuildContext context) =>
               SplashBloc(GetIt.I.get<LocationRepository>()),
           child: SplashPage(),
+        ));
+
+    GetIt.I.registerFactory<BlocProvider<WeatherBloc>>(() => BlocProvider(
+          create: (BuildContext context) =>
+              WeatherBloc(),
+          child: WeatherPage(),
         ));
 
     GetIt.I.registerFactory<BlocProvider<AirportsBloc>>(() => BlocProvider(
