@@ -14,12 +14,12 @@ import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
 
 import 'GetNearbyAirportsUseCase.dart';
 
-class GetNearbyAirportsUseCaseImpl extends GetWeatherUseCase {
+class GeWeatherUseCaseImpl extends GetWeatherUseCase {
   final BaseRepository baseRepository;
   final LocationRepository locationRepository;
   final Mapper<WeatherDto, WeatherModel> mapper;
 
-  GetNearbyAirportsUseCaseImpl(
+  GeWeatherUseCaseImpl(
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override

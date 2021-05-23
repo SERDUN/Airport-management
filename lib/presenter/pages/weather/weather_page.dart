@@ -37,7 +37,7 @@ class _WeatherPageState extends State<WeatherPage> {
               children: [
                 Container(
                     margin: EdgeInsets.all(16),
-                    child: Text("Meteorological data for ${model.name}")),
+                    child: Text("Meteorological data for ")),
 
                 Row(
                   children: [

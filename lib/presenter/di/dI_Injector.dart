@@ -2,9 +2,19 @@ import 'package:Aevius/config/env.dart';
 import 'package:Aevius/data/repository/base_repository.dart';
 import 'package:Aevius/data/repository/location_repository.dart';
 import 'package:Aevius/data/source/rest_client.dart';
+import 'package:Aevius/domain/common/mapper_contract.dart';
+import 'package:Aevius/domain/entity/dto/airoport_dto.dart';
+import 'package:Aevius/domain/entity/dto/weather_dto.dart';
+import 'package:Aevius/domain/entity/mappers/airport_mapper.dart';
+import 'package:Aevius/domain/entity/mappers/weather_mapper.dart';
+import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
+import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
+import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
+import 'package:Aevius/domain/usecases/GetWeatherUseCaseImpl.dart';
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/flights/airports_page.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
@@ -19,22 +29,44 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DiInjector {
   static Future init() async {
     await initRepository();
+    await initMappers();
+    await initUseCase();
     await injectPages();
+    return Future.value();
+  }
 
+  static Future initMappers() async {
+    GetIt.I.registerFactory<Mapper<AirportDTO, AirportModel>>(
+        () => AirportMapper());
+    GetIt.I.registerFactory<Mapper<WeatherDto, WeatherModel>>(
+        () => WeatherMapper());
     return Future.value();
   }
 
   static Future initRepository() async {
     var sharedPreferences = await SharedPreferences.getInstance();
 
-    //register data source
     GetIt.I.registerSingleton<SharedPreferences>(sharedPreferences);
-    //GetIt.I.registerSingleton<RestClient>(dioRestClient);
 
     GetIt.I.registerLazySingleton<LocationRepository>(
         () => LocationRepositoryImpl());
     GetIt.I.registerLazySingleton<BaseRepository>(
         () => BaseRepositoryImpl(aviationKey, weatherKey));
+
+    return Future.value();
+  }
+
+  static Future initUseCase() async {
+    GetIt.I.registerFactory<GetNearbyAirportsUseCase>(() =>
+        GetNearbyAirportsUseCaseImpl(
+            GetIt.I.get<BaseRepository>(),
+            GetIt.I.get<LocationRepository>(),
+            GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
+
+    GetIt.I.registerFactory<GetWeatherUseCase>(() => GeWeatherUseCaseImpl(
+        GetIt.I.get<BaseRepository>(),
+        GetIt.I.get<LocationRepository>(),
+        GetIt.I.get<Mapper<WeatherDto, WeatherModel>>()));
 
     return Future.value();
   }
@@ -46,11 +78,6 @@ class DiInjector {
           child: SplashPage(),
         ));
 
-    // GetIt.I.registerFactory<BlocProvider<WeatherBloc>>(() => BlocProvider(
-    //       create: (BuildContext context) => WeatherBloc(),
-    //       child: WeatherPage(),
-    //     ));
-
     GetIt.I.registerFactoryParam<BlocProvider<WeatherBloc>, WeatherModel, void>(
         (model, _) => BlocProvider(
               create: (BuildContext context) => WeatherBloc(model),
@@ -59,8 +86,8 @@ class DiInjector {
 
     GetIt.I.registerFactory<BlocProvider<AirportsBloc>>(() => BlocProvider(
           create: (BuildContext context) => AirportsBloc(
-            GetIt.I.get<BaseRepository>(),
-            GetIt.I.get<LocationRepository>(),
+            GetIt.I.get<GetNearbyAirportsUseCase>(),
+            GetIt.I.get<GetWeatherUseCase>(),
           ),
           child: AirportsPage(),
         ));
