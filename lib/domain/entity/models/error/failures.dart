@@ -40,7 +40,7 @@ class ServerFailure extends Failure {
               _displayFailure = "No internet connection";
             } else {
               var list = mapError.entries.toList();
-              _displayFailure = list.first.value.toList().first.toString();
+              _displayFailure = list.first.value;
             }
           } else {
             var dataParsed = data

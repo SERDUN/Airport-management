@@ -617,16 +617,16 @@ class Clouds {
 
 class Altimeter {
   String _repr;
-  int _value;
+  String _value;
   String _spoken;
 
   String get repr => _repr;
-  int get value => _value;
+  String get value => _value;
   String get spoken => _spoken;
 
   Altimeter({
       String repr, 
-      int value, 
+      String value,
       String spoken}){
     _repr = repr;
     _value = value;
@@ -635,7 +635,7 @@ class Altimeter {
 
   Altimeter.fromJson(dynamic json) {
     _repr = json["repr"];
-    _value = json["value"];
+    _value = json["value"].toString();
     _spoken = json["spoken"];
   }
 

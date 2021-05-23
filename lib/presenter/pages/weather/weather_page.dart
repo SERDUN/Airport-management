@@ -24,6 +24,8 @@ class _WeatherPageState extends State<WeatherPage> {
     return BlocListener<WeatherBloc, WeatherState>(
       listener: (ctx, state) {
         print("current state: " + state.toString());
+
+
       },
       child: BlocBuilder<WeatherBloc, WeatherState>(builder: (ctx, state) {
         var model = state.weatherModel;

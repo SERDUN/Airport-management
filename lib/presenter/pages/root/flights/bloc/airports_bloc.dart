@@ -9,6 +9,7 @@ import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
 import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 part 'airports_event.dart';
 
@@ -22,30 +23,35 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
       : super(AirportsInitial([]));
 
   @override
-  Stream<AirportsState> mapEventToState(
-    AirportsEvent event,
-  ) async* {
-    if (event is LoadNearbyAirports) handleGettingAirports();
-    if (event is LoadWeatherForAirport) handleGettingWeather(event.airport);
-
+  Stream<AirportsState> mapEventToState(AirportsEvent event,) async* {
+    if (event is LoadNearbyAirports) yield* handleGettingAirports();
+    if (event is LoadWeatherForAirport)
+      yield* handleGettingWeather(event.airport.code);
+    if (event is FindWeatherByCodeEvent)
+      yield* handleGettingWeather(event.code);
   }
 
   Stream<AirportsState> handleGettingAirports() async* {
     var airportsResult = await getNearbyAirportsUseCase.getNearbyAirports();
 
     if (airportsResult.isLeft)
-      yield AirportFailureState(state.airports, airportsResult.left.getMessage());
+      yield AirportFailureState(
+          state.airports, airportsResult.left.getMessage());
 
-    if (airportsResult.isLeft) yield AirportsLoaded(airportsResult.right);
+    if (airportsResult.isRight) yield AirportsLoaded(airportsResult.right);
   }
 
-  Stream<AirportsState> handleGettingWeather(AirportModel airport) async* {
-    var weatherResult = await getWeatherUseCase.getWeather(airport.code);
+  Stream<AirportsState> handleGettingWeather(String code) async* {
+    yield AirportsInitial(state.airports);
+    var weatherResult = await getWeatherUseCase.getWeather(code);
 
     if (weatherResult.isLeft)
-      yield AirportFailureState(state.airports, weatherResult.left.getMessage());
+      yield AirportFailureState(
+          state.airports, weatherResult.left.getMessage());
 
-    if (weatherResult.isLeft)
+    if (weatherResult.isRight)
       yield WeatherLoaded(state.airports, weatherResult.right);
   }
+
+
 }
