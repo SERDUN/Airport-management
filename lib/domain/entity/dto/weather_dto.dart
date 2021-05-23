@@ -121,9 +121,9 @@ class WeatherDto {
     //   });
     // }
     _visibility = json["visibility"] != null ? Visibility.fromJson(json["visibility"]) : null;
-    _windDirection = json["wind_direction"] != null ? Wind_direction.fromJson(json["windDirection"]) : null;
+    _windDirection = json["wind_direction"] != null ? Wind_direction.fromJson(json["wind_direction"]) : null;
     _windGust = json["wind_gust"];
-    _windSpeed = json["wind_speed"] != null ? Wind_speed.fromJson(json["windSpeed"]) : null;
+    _windSpeed = json["wind_speed"] != null ? Wind_speed.fromJson(json["wind_speed"]) : null;
     // if (json["wx_codes"] != null) {
     //   _wxCodes = [];
     //   json["wx_codes"].forEach((v) {
@@ -136,7 +136,7 @@ class WeatherDto {
     _time = json["time"] != null ? Time.fromJson(json["time"]) : null;
     _remarks = json["remarks"];
     _dewpoint = json["dewpoint"] != null ? Dewpoint.fromJson(json["dewpoint"]) : null;
-    _remarksInfo = json["remarks_info"] != null ? Remarks_info.fromJson(json["remarksInfo"]) : null;
+    _remarksInfo = json["remarks_info"] != null ? Remarks_info.fromJson(json["remarks_info"]) : null;
     // if (json["runway_visibility"] != null) {
     //   _runwayVisibility = [];
     //   json["runway_visibility"].forEach((v) {

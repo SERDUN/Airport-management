@@ -33,7 +33,7 @@ class DiInjector {
     GetIt.I.registerLazySingleton<LocationRepository>(
         () => LocationRepositoryImpl());
     GetIt.I.registerLazySingleton<BaseRepository>(
-        () => BaseRepositoryImpl(aviationKey));
+        () => BaseRepositoryImpl(aviationKey, weatherKey));
 
     return Future.value();
   }
@@ -46,8 +46,7 @@ class DiInjector {
         ));
 
     GetIt.I.registerFactory<BlocProvider<WeatherBloc>>(() => BlocProvider(
-          create: (BuildContext context) =>
-              WeatherBloc(),
+          create: (BuildContext context) => WeatherBloc(),
           child: WeatherPage(),
         ));
 

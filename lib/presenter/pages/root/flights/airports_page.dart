@@ -29,7 +29,8 @@ class _AirportsPageState extends State<AirportsPage> {
     return SafeArea(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
       children: [
         Container(
             margin: EdgeInsets.all(16),
@@ -72,25 +73,31 @@ class _AirportsPageState extends State<AirportsPage> {
       },
       child: BlocBuilder<AirportsBloc, AirportsState>(
         builder: (ctx, state) {
-          if (state is AirportsLoaded) {
             return Expanded(
-                child: ListView.builder(
-              itemCount: state.airports.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  child: ListTile(
-                    title: Text('${state.airports[index].name}'),
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(
-                        context, MainNavigatorRoutes.weather);
+                child: Stack(
+              children: [
+                ListView.builder(
+                  itemCount: state.airports.length,
+                  itemBuilder: (context, index) {
+                    var airport = state.airports[index];
+                    return InkWell(
+                      child: ListTile(
+                        title: Text('${airport.name}'),
+                      ),
+                      onTap: () {
+                        _bloc.add(LoadWeatherForAirport(airport));
+                        // Navigator.pushNamed(
+                        //     context, MainNavigatorRoutes.weather);
+                      },
+                    );
                   },
-                );
-              },
+                ),
+                ( state is AirportsInitial)?BaseIndicator():SizedBox()
+
+              ],
             ));
-          } else
-            return BaseIndicator();
-        },
+          }
+
       ),
     );
   }

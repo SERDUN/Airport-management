@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Aevius/domain/entity/models/airport_model.dart';
+import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -30,6 +31,12 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
       var list = airports.right
           .map((e) => AirportModel(e.nameAirport, e.codeIataAirport));
       yield AirportsLoaded(list.toList());
+    }
+
+    if (event is LoadWeatherForAirport) {
+      var weather = await baseRepository.getWeatherByCode(event.airport.code);
+      yield WeatherLoaded(
+          this.state.airports, WeatherModel(event.airport.name.toString()));
     }
   }
 }

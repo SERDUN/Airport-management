@@ -20,3 +20,12 @@ class AirportsLoaded extends AirportsState {
   List<Object> get props => [];
 }
 
+class WeatherLoaded extends AirportsState {
+  final WeatherModel weatherModel;
+
+  WeatherLoaded(List<AirportModel> airports, this.weatherModel)
+      : super(airports);
+
+  @override
+  List<Object> get props => [];
+}

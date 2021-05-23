@@ -8,10 +8,12 @@ import 'package:dio/dio.dart';
 
 class BaseRepositoryImpl extends BaseRepository {
   final String aviationKey;
+  final String weatherKey;
   RestClient _restClientAirPorts =
       RestClient("http://aviation-edge.com/v2/public");
+  RestClient _restClientWeather = RestClient("https://avwx.rest/api");
 
-  BaseRepositoryImpl(this.aviationKey);
+  BaseRepositoryImpl(this.aviationKey, this.weatherKey);
 
   @override
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
@@ -29,8 +31,17 @@ class BaseRepositoryImpl extends BaseRepository {
   }
 
   @override
-  Future<Either<Failure, WeatherDto>> getWeatherByCode(String code) {
-    // TODO: implement getWeatherByCode
-    throw UnimplementedError();
+  Future<Either<Failure, WeatherDto>> getWeatherByCode(String code) async {
+    _restClientWeather.dio.options.headers["Authorization"] = "BEARER  $weatherKey";
+
+    Response response = await _restClientWeather.get("/metar/$code?airport=true&format=json");
+    if (response.statusCode < 300) {
+      return Right(WeatherDto.fromJson(response.data));
+    } else {
+      var serverFailure = ServerFailure(
+          response.statusCode, response.data, response.statusMessage)
+        ..parseError();
+      return Left(serverFailure);
+    }
   }
 }
