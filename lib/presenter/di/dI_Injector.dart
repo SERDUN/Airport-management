@@ -22,10 +22,10 @@ import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
 import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
 import 'package:Aevius/domain/usecases/GetWeatherUseCaseImpl.dart';
-import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
-import 'package:Aevius/presenter/pages/root/flights/airports_page.dart';
-import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
-import 'package:Aevius/presenter/pages/root/saved/saved_page.dart';
+import 'package:Aevius/presenter/pages/root/airports/airports_page.dart';
+import 'package:Aevius/presenter/pages/root/airports/bloc/airports_bloc.dart';
+import 'package:Aevius/presenter/pages/root/bookmarks/bloc/saved_bloc.dart';
+import 'package:Aevius/presenter/pages/root/bookmarks/bookmark_page.dart';
 import 'package:Aevius/presenter/pages/root/settings/setting_page.dart';
 import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
@@ -57,7 +57,6 @@ class DiInjector {
   }
 
   static Future initRepository() async {
-
     final options = CacheOptions(
       store: MemCacheStore(),
       // Default.
@@ -138,10 +137,10 @@ class DiInjector {
           child: SplashPage(),
         ));
 
-    GetIt.I.registerFactoryParam<BlocProvider<WeatherBloc>, WeatherModel, void>(
-        (model, _) => BlocProvider(
+    GetIt.I.registerFactoryParam<BlocProvider<WeatherBloc>, WeatherModel, AirportModel>(
+        (model, airportModel) => BlocProvider(
               create: (BuildContext context) => WeatherBloc(
-                  model, GetIt.I.get<AddAirportToBookmarkUseCase>()),
+                  model, GetIt.I.get<AddAirportToBookmarkUseCase>(),airportModel),
               child: WeatherPage(),
             ));
 

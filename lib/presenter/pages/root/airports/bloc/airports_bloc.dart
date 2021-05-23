@@ -23,12 +23,14 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
       : super(AirportsInitial([]));
 
   @override
-  Stream<AirportsState> mapEventToState(AirportsEvent event,) async* {
+  Stream<AirportsState> mapEventToState(
+    AirportsEvent event,
+  ) async* {
     if (event is LoadNearbyAirports) yield* handleGettingAirports();
     if (event is LoadWeatherForAirport)
-      yield* handleGettingWeather(event.airport.code);
+      yield* handleGettingWeather(event.airport);
     if (event is FindWeatherByCodeEvent)
-      yield* handleGettingWeather(event.code);
+      yield* handleGettingWeather(AirportModel("Not defined", event.code));
   }
 
   Stream<AirportsState> handleGettingAirports() async* {
@@ -41,17 +43,15 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
     if (airportsResult.isRight) yield AirportsLoaded(airportsResult.right);
   }
 
-  Stream<AirportsState> handleGettingWeather(String code) async* {
+  Stream<AirportsState> handleGettingWeather(AirportModel model) async* {
     yield AirportsInitial(state.airports);
-    var weatherResult = await getWeatherUseCase.getWeather(code);
+    var weatherResult = await getWeatherUseCase.getWeather(model.code);
 
     if (weatherResult.isLeft)
       yield AirportFailureState(
           state.airports, weatherResult.left.getMessage());
 
     if (weatherResult.isRight)
-      yield WeatherLoaded(state.airports, weatherResult.right);
+      yield WeatherLoaded(state.airports, weatherResult.right, model);
   }
-
-
 }

@@ -22,8 +22,9 @@ class AirportsLoaded extends AirportsState {
 
 class WeatherLoaded extends AirportsState {
   final WeatherModel weatherModel;
+  final AirportModel selectedAirport;
 
-  WeatherLoaded(List<AirportModel> airports, this.weatherModel)
+  WeatherLoaded(List<AirportModel> airports, this.weatherModel, this.selectedAirport)
       : super(airports);
 
   @override

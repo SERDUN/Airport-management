@@ -13,22 +13,23 @@ import 'package:Aevius/domain/repository/location_repository.dart';
 import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
 
 import 'AddAirportToBookmarkUseCase.dart';
-import 'GetAirportsFromBookmarksUseCase.dart';
 import 'GetNearbyAirportsUseCase.dart';
 
-class GetAirportsFromBookmarkUseCaseImp extends GetAirportsFromBookmarkUseCase {
+class AddAirportToBookmarkUseCaseImp extends AddAirportToBookmarkUseCase {
   final BaseRepository baseRepository;
   final LocationRepository locationRepository;
   final Mapper<AirportDTO, AirportModel> mapper;
 
-  GetAirportsFromBookmarkUseCaseImp(
+  AddAirportToBookmarkUseCaseImp(
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override
-  Future<Either<Failure, List<AirportModel>>> execute() async {
-    var result = await baseRepository.getAirportsFromBookmark();
+  Future<Either<Failure, AirportModel>> execute(AirportModel airport) async {
+    AirportDTO dto = mapper.mapToDto(airport);
+    var result = await baseRepository.addAirportToBookmark(dto);
     if (result.isLeft) return Left(ErrorMessage(result.left.getMessage()));
-    var model = result.right.map((e) => mapper.mapToModel(e)).toList();
+
+    var model = mapper.mapToModel(result.right);
     return Future.value(Right(model));
   }
 }

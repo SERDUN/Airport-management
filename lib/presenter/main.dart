@@ -1,8 +1,8 @@
 import 'package:Aevius/presenter/common/ui/logo_widget.dart';
 import 'package:Aevius/presenter/pages/main_routes.dart';
-import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
+import 'package:Aevius/presenter/pages/root/airports/bloc/airports_bloc.dart';
+import 'package:Aevius/presenter/pages/root/bookmarks/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/root/root_navigation_page.dart';
-import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import 'argument/weather_airports_arg.dart';
 import 'di/dI_Injector.dart';
 
 void main() async {
@@ -46,9 +47,10 @@ class MyApp extends StatelessWidget {
               ),
             );
           case MainNavigatorRoutes.weather:
+            WeatherAirportArg arg = settings.arguments;
             return MaterialPageRoute(
-              builder: (context) => GetIt.I
-                  .get<BlocProvider<WeatherBloc>>(param1: settings.arguments),
+              builder: (context) => GetIt.I.get<BlocProvider<WeatherBloc>>(
+                  param1: arg.weatherModel, param2: arg.airportModel),
             );
           case MainNavigatorRoutes.saved:
             return MaterialPageRoute(

@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 
 import 'dialog_message.dart';
 
-
 class DialogDelegate {
   String _title;
   String _description;
@@ -85,7 +84,6 @@ class DialogDelegate {
     return this;
   }
 
-
   void showInfoDialog() {
     var root = MessageDialog(
       title: _title,
@@ -112,14 +110,6 @@ class DialogDelegate {
   }
 
   void showInfoSnakeBar() {
-    Scaffold.of(context).showSnackBar(SnackBar(
-        backgroundColor: Color(0xDE000000),
-        duration: Duration(seconds: 2),
-        content: Container(
-          child: Text(
-            _title,
-            style: TextStyle(color: Colors.white),
-          ),
-        )));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_title)));
   }
 }
