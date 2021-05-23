@@ -17,6 +17,8 @@ import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
 import 'package:Aevius/domain/usecases/GetWeatherUseCaseImpl.dart';
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/flights/airports_page.dart';
+import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
+import 'package:Aevius/presenter/pages/root/saved/saved_page.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/splash_page.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
@@ -72,6 +74,11 @@ class DiInjector {
   }
 
   static Future injectPages() {
+    GetIt.I.registerFactory<BlocProvider<SavedBloc>>(() => BlocProvider(
+          create: (BuildContext context) => SavedBloc(),
+          child: SavedPage(),
+        ));
+
     GetIt.I.registerFactory<BlocProvider<SplashBloc>>(() => BlocProvider(
           create: (BuildContext context) =>
               SplashBloc(GetIt.I.get<LocationRepository>()),

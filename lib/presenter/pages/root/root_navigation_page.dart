@@ -1,4 +1,6 @@
 import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
+import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
+import 'package:Aevius/presenter/pages/root/settings/setting_page.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,8 +17,12 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  List<Widget> pages = [
+    GetIt.I.get<BlocProvider<AirportsBloc>>(),
+    GetIt.I.get<BlocProvider<SavedBloc>>(),
+    SettingPage()
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,13 +39,17 @@ class _RootPageState extends State<RootPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: getCurrentPage(_selectedIndex),
+        child: pages[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.flight),
             label: 'Flights',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Saved',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
@@ -51,18 +61,5 @@ class _RootPageState extends State<RootPage>
         onTap: _onItemTapped,
       ),
     );
-  }
-
-  Widget getCurrentPage(int index) {
-    switch (_selectedIndex) {
-      case 0:
-        return GetIt.I.get<BlocProvider<AirportsBloc>>();
-
-      default:
-        return Text(
-          'Index 1',
-          style: optionStyle,
-        );
-    }
   }
 }

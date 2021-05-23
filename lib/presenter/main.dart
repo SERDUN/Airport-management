@@ -1,6 +1,7 @@
 import 'package:Aevius/presenter/common/ui/logo_widget.dart';
 import 'package:Aevius/presenter/pages/main_routes.dart';
 import 'package:Aevius/presenter/pages/root/root_navigation_page.dart';
+import 'package:Aevius/presenter/pages/root/saved/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +25,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    precacheImage(Image.asset("assets/logo.png").image, context);
+
     return MaterialApp(
-      title: 'Фумшгі',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       onGenerateRoute: (RouteSettings settings) {
@@ -39,7 +41,12 @@ class MyApp extends StatelessWidget {
             );
           case MainNavigatorRoutes.weather:
             return MaterialPageRoute(
-              builder: (context) => GetIt.I.get<BlocProvider<WeatherBloc>>(param1: settings.arguments),
+              builder: (context) => GetIt.I
+                  .get<BlocProvider<WeatherBloc>>(param1: settings.arguments),
+            );
+          case MainNavigatorRoutes.saved:
+            return MaterialPageRoute(
+              builder: (context) => GetIt.I.get<BlocProvider<SavedBloc>>(),
             );
           default:
             return MaterialPageRoute(

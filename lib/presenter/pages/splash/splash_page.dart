@@ -89,36 +89,4 @@ class _SplashPageState extends State<SplashPage> {
     ;
   }
 
-// Widget buildPage() {
-//   return Container(
-//     child: Stack(
-//       children: <Widget>[
-//         Center(
-//           child: LogoWidget(),
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: <Widget>[
-//             Column(
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               children: <Widget>[
-//                 Container(
-//                   child: Text(
-//                     "Weather for you",
-//                     style: TextStyle(
-//                         fontSize: 18,
-//                         color: Colors.grey,
-//                         fontFamily: 'GochiHands'),
-//                   ),
-//                   margin: EdgeInsets.only(bottom: 8),
-//                 )
-//               ],
-//             )
-//           ],
-//         ),
-//       ],
-//     ),
-//   );
-// }
 }
