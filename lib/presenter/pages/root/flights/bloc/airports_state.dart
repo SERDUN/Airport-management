@@ -10,14 +10,14 @@ class AirportsInitial extends AirportsState {
   AirportsInitial(List<AirportModel> airports) : super(airports);
 
   @override
-  List<Object> get props => [airports,DateTime.now().microsecondsSinceEpoch];
+  List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch];
 }
 
 class AirportsLoaded extends AirportsState {
   AirportsLoaded(List<AirportModel> airports) : super(airports);
 
   @override
-  List<Object> get props => [airports,DateTime.now().microsecondsSinceEpoch];
+  List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch];
 }
 
 class WeatherLoaded extends AirportsState {
@@ -27,5 +27,15 @@ class WeatherLoaded extends AirportsState {
       : super(airports);
 
   @override
-  List<Object> get props => [airports,DateTime.now().microsecondsSinceEpoch];
+  List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch];
+}
+
+class AirportFailureState extends AirportsState {
+  final String message;
+
+  AirportFailureState(List<AirportModel> airports, this.message)
+      : super(airports);
+
+  @override
+  List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch,message];
 }

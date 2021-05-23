@@ -5,6 +5,8 @@ import 'package:Aevius/domain/entity/models/cloud_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
+import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
+import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -13,45 +15,37 @@ part 'airports_event.dart';
 part 'airports_state.dart';
 
 class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
-  final BaseRepository baseRepository;
-  final LocationRepository locationRepository;
+  GetNearbyAirportsUseCase getNearbyAirportsUseCase;
+  GetWeatherUseCase getWeatherUseCase;
 
-  AirportsBloc(this.baseRepository, this.locationRepository)
+  AirportsBloc(this.getNearbyAirportsUseCase, this.getWeatherUseCase)
       : super(AirportsInitial([]));
 
   @override
   Stream<AirportsState> mapEventToState(
     AirportsEvent event,
   ) async* {
-    //add map and useCase
-    //todo add handling error
-    if (event is LoadNearbyAirports) {
-      var location = await locationRepository.getCurrentLocation();
-      var airports = await baseRepository.getNearbyAirports(
-          location.right.lat, location.right.lng);
-      var list = airports.right
-          .map((e) => AirportModel(e.nameAirport, e.codeIataAirport));
-      yield AirportsLoaded(list.toList());
-    }
+    if (event is LoadNearbyAirports) handleGettingAirports();
+    if (event is LoadWeatherForAirport) handleGettingWeather(event.airport);
 
-    if (event is LoadWeatherForAirport) {
-      var weather = await baseRepository.getWeatherByCode(event.airport.code);
+  }
 
-      var clouds = weather.right.clouds
-          .map((e) => CloudModel(e.type, e.altitude.toString(),
-              e.modifier.toString(), e.direction.toString()))
-          .toList();
+  Stream<AirportsState> handleGettingAirports() async* {
+    var airportsResult = await getNearbyAirportsUseCase.getNearbyAirports();
 
-      var model = WeatherModel(event.airport.name.toString(),
-          lastFetch: weather.right.meta.stationsUpdated,
-          altimeterValue: weather.right.altimeter.value.toString(),
-          flightsRule: weather.right.flightRules,
-          visibility: weather.right.visibility.value.toString(),
-          windDirection: weather.right.windDirection.value.toString(),
-          windSpeed: weather.right.windSpeed.value.toString(),
-          tmp: weather.right.temperature.value.toString(),
-          clouds: clouds);
-      yield WeatherLoaded(this.state.airports, model);
-    }
+    if (airportsResult.isLeft)
+      yield AirportFailureState(state.airports, airportsResult.left.getMessage());
+
+    if (airportsResult.isLeft) yield AirportsLoaded(airportsResult.right);
+  }
+
+  Stream<AirportsState> handleGettingWeather(AirportModel airport) async* {
+    var weatherResult = await getWeatherUseCase.getWeather(airport.code);
+
+    if (weatherResult.isLeft)
+      yield AirportFailureState(state.airports, weatherResult.left.getMessage());
+
+    if (weatherResult.isLeft)
+      yield WeatherLoaded(state.airports, weatherResult.right);
   }
 }
