@@ -1,4 +1,5 @@
-import 'package:Aevius/presenter/pages/root/flights/airports_bloc.dart';
+import 'package:Aevius/presenter/common/ui/base_indicator.dart';
+import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,6 +26,7 @@ class _AirportsPageState extends State<AirportsPage> {
     return SafeArea(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
             margin: EdgeInsets.all(16),
@@ -48,6 +50,10 @@ class _AirportsPageState extends State<AirportsPage> {
             ),
           ]),
         ),
+        Container(
+            margin: EdgeInsets.all(16),
+            child: Text("Nearby "
+                "airports")),
         buildNearbyAirportsPage()
       ],
     ));
@@ -63,10 +69,19 @@ class _AirportsPageState extends State<AirportsPage> {
       },
       child: BlocBuilder<AirportsBloc, AirportsState>(
         builder: (ctx, state) {
-          return Container(
-              margin: EdgeInsets.all(16),
-              child: Text("Nearby "
-                  "airports"));
+          if (state is AirportsLoaded) {
+            return Expanded(
+                child: ListView.builder(
+
+              itemCount: state.airports.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('${state.airports[index].name}'),
+                );
+              },
+            ));
+          } else
+            return BaseIndicator();
         },
       ),
     );

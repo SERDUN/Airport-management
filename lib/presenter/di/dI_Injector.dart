@@ -4,7 +4,7 @@ import 'package:Aevius/data/repository/location_repository.dart';
 import 'package:Aevius/data/source/rest_client.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
-import 'package:Aevius/presenter/pages/root/flights/airports_bloc.dart';
+import 'package:Aevius/presenter/pages/root/flights/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/flights/airports_page.dart';
 import 'package:Aevius/presenter/pages/splash/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/splash_page.dart';
