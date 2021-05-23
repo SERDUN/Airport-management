@@ -1,6 +1,7 @@
 import 'package:Aevius/config/env.dart';
 import 'package:Aevius/data/repository/base_repository.dart';
 import 'package:Aevius/data/repository/location_repository.dart';
+import 'package:Aevius/data/source/local_storage.dart';
 import 'package:Aevius/data/source/rest_client.dart';
 import 'package:Aevius/domain/common/mapper_contract.dart';
 import 'package:Aevius/domain/entity/dto/airoport_dto.dart';
@@ -11,6 +12,10 @@ import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
+import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/GetAirportsFromBookmarkUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/GetAirportsFromBookmarksUseCase.dart';
 import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
 import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
@@ -47,13 +52,22 @@ class DiInjector {
 
   static Future initRepository() async {
     var sharedPreferences = await SharedPreferences.getInstance();
+    RestClient restClientAirPorts =
+        RestClient("http://aviation-edge.com/v2/public");
+    RestClient restClientWeather = RestClient("https://avwx.rest/api");
+
+    GetIt.I.registerSingleton<LocalStorage>(LocalStorage(sharedPreferences));
 
     GetIt.I.registerSingleton<SharedPreferences>(sharedPreferences);
 
     GetIt.I.registerLazySingleton<LocationRepository>(
         () => LocationRepositoryImpl());
-    GetIt.I.registerLazySingleton<BaseRepository>(
-        () => BaseRepositoryImpl(aviationKey, weatherKey));
+    GetIt.I.registerLazySingleton<BaseRepository>(() => BaseRepositoryImpl(
+        aviationKey,
+        weatherKey,
+        restClientAirPorts,
+        restClientWeather,
+        GetIt.I.get<LocalStorage>()));
 
     return Future.value();
   }
@@ -69,6 +83,18 @@ class DiInjector {
         GetIt.I.get<BaseRepository>(),
         GetIt.I.get<LocationRepository>(),
         GetIt.I.get<Mapper<WeatherDto, WeatherModel>>()));
+
+    GetIt.I.registerFactory<GetAirportsFromBookmarkUseCase>(() =>
+        GetAirportsFromBookmarkUseCaseImp(
+            GetIt.I.get<BaseRepository>(),
+            GetIt.I.get<LocationRepository>(),
+            GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
+
+    GetIt.I.registerFactory<AddAirportToBookmarkUseCase>(() =>
+        AddAirportToBookmarkUseCaseImp(
+            GetIt.I.get<BaseRepository>(),
+            GetIt.I.get<LocationRepository>(),
+            GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
 
     return Future.value();
   }

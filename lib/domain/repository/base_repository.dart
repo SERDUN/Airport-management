@@ -4,8 +4,11 @@ import 'package:Aevius/domain/entity/models/error/either.dart';
 import 'package:Aevius/domain/entity/models/error/failures.dart';
 
 abstract class BaseRepository {
-  Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
-      double lat, double lng);
+  Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(double lat, double lng);
+
+  Future<Either<Failure, AirportDTO>> addAirportToBookmark(AirportDTO airportDTO);
+  Future<Either<Failure, List<AirportDTO>>> getAirportsFromBookmark();
+
 
   Future<Either<Failure, WeatherDto>> getWeatherByCode(String code);
 }

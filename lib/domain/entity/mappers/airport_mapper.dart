@@ -5,7 +5,10 @@ import 'package:Aevius/domain/entity/models/airport_model.dart';
 class AirportMapper extends Mapper<AirportDTO, AirportModel> {
   @override
   AirportDTO mapToDto(AirportModel model) {
-    throw UnimplementedError();
+    return AirportDTO(
+        nameAirport: model.name,
+        codeIcaoAirport: model.code,
+        codeIataAirport: model.code);
   }
 
   @override
