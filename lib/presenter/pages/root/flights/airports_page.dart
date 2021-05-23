@@ -67,38 +67,33 @@ class _AirportsPageState extends State<AirportsPage> {
     return BlocListener<AirportsBloc, AirportsState>(
       listener: (ctx, state) {
         print("current state: " + state.toString());
-        if (state is LocationAllow) {
-          //actionOpenHome();
+        if (state is WeatherLoaded) {
+          Navigator.pushNamed(context, MainNavigatorRoutes.weather,
+              arguments: state.weatherModel);
         }
       },
-      child: BlocBuilder<AirportsBloc, AirportsState>(
-        builder: (ctx, state) {
-            return Expanded(
-                child: Stack(
-              children: [
-                ListView.builder(
-                  itemCount: state.airports.length,
-                  itemBuilder: (context, index) {
-                    var airport = state.airports[index];
-                    return InkWell(
-                      child: ListTile(
-                        title: Text('${airport.name}'),
-                      ),
-                      onTap: () {
-                        _bloc.add(LoadWeatherForAirport(airport));
-                        // Navigator.pushNamed(
-                        //     context, MainNavigatorRoutes.weather);
-                      },
-                    );
+      child: BlocBuilder<AirportsBloc, AirportsState>(builder: (ctx, state) {
+        return Expanded(
+            child: Stack(
+          children: [
+            ListView.builder(
+              itemCount: state.airports.length,
+              itemBuilder: (context, index) {
+                var airport = state.airports[index];
+                return InkWell(
+                  child: ListTile(
+                    title: Text('${airport.name}'),
+                  ),
+                  onTap: () {
+                    _bloc.add(LoadWeatherForAirport(airport));
                   },
-                ),
-                ( state is AirportsInitial)?BaseIndicator():SizedBox()
-
-              ],
-            ));
-          }
-
-      ),
+                );
+              },
+            ),
+            (state is AirportsInitial) ? BaseIndicator() : SizedBox()
+          ],
+        ));
+      }),
     );
   }
 }

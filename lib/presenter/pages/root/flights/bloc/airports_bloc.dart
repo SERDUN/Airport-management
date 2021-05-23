@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Aevius/domain/entity/models/airport_model.dart';
+import 'package:Aevius/domain/entity/models/cloud_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
@@ -35,8 +36,22 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
 
     if (event is LoadWeatherForAirport) {
       var weather = await baseRepository.getWeatherByCode(event.airport.code);
-      yield WeatherLoaded(
-          this.state.airports, WeatherModel(event.airport.name.toString()));
+
+      var clouds = weather.right.clouds
+          .map((e) => CloudModel(e.type, e.altitude.toString(),
+              e.modifier.toString(), e.direction.toString()))
+          .toList();
+
+      var model = WeatherModel(event.airport.name.toString(),
+          lastFetch: weather.right.meta.stationsUpdated,
+          altimeterValue: weather.right.altimeter.value.toString(),
+          flightsRule: weather.right.flightRules,
+          visibility: weather.right.visibility.value.toString(),
+          windDirection: weather.right.windDirection.value.toString(),
+          windSpeed: weather.right.windSpeed.value.toString(),
+          tmp: weather.right.temperature.value.toString(),
+          clouds: clouds);
+      yield WeatherLoaded(this.state.airports, model);
     }
   }
 }

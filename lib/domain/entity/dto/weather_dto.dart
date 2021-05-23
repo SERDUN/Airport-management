@@ -1,28 +1,29 @@
-/// meta : {"timestamp":"2021-05-22T15:13:43.657553Z","stations_updated":"2021-04-23"}
-/// altimeter : {"repr":"Q1013","value":1013,"spoken":"one zero one three"}
-/// clouds : []
+/// meta : {"timestamp":"2021-05-23T09:59:49.336568Z","stations_updated":"2021-04-23"}
+/// altimeter : {"repr":"Q1016","value":1016,"spoken":"one zero one six"}
+/// clouds : [{"repr":"BKN049","type":"BKN","altitude":49,"modifier":null,"direction":null}]
 /// flight_rules : "VFR"
 /// other : []
-/// visibility : {"repr":"CAVOK","value":9999,"spoken":"ceiling and visibility ok"}
-/// wind_direction : {"repr":"180","value":180,"spoken":"one eight zero"}
+/// visibility : {"repr":"9999","value":9999,"spoken":"nine nine nine nine"}
+/// wind_direction : {"repr":"210","value":210,"spoken":"two one zero"}
 /// wind_gust : null
 /// wind_speed : {"repr":"03","value":3,"spoken":"three"}
 /// wx_codes : []
-/// raw : "UKKK 221500Z 18003MPS 150V230 CAVOK 22/06 Q1013 R26/70D NOSIG"
-/// sanitized : "UKKK 221500Z 18003MPS 150V230 CAVOK 22/06 Q1013 R26/70D NOSIG"
-/// station : "UKKK"
-/// time : {"repr":"221500Z","dt":"2021-05-22T15:00:00Z"}
-/// remarks : "R26/70D NOSIG"
-/// dewpoint : {"repr":"06","value":6,"spoken":"six"}
+/// raw : "UKLL 230930Z 21003MPS 160V270 9999 BKN049 17/07 Q1016 R31/D NOSIG"
+/// sanitized : "UKLL 230930Z 21003MPS 160V270 9999 BKN049 17/07 Q1016 R31/D NOSIG"
+/// station : "UKLL"
+/// time : {"repr":"230930Z","dt":"2021-05-23T09:30:00Z"}
+/// remarks : "R31/D NOSIG"
+/// dewpoint : {"repr":"07","value":7,"spoken":"seven"}
 /// remarks_info : {"dewpoint_decimal":null,"temperature_decimal":null}
 /// runway_visibility : []
-/// temperature : {"repr":"22","value":22,"spoken":"two two"}
-/// wind_variable_direction : [{"repr":"150","value":150,"spoken":"one five zero"},{"repr":"230","value":230,"spoken":"two three zero"}]
+/// temperature : {"repr":"17","value":17,"spoken":"one seven"}
+/// wind_variable_direction : [{"repr":"160","value":160,"spoken":"one six zero"},{"repr":"270","value":270,"spoken":"two seven zero"}]
 /// units : {"altimeter":"hPa","altitude":"ft","temperature":"C","visibility":"m","wind_speed":"m/s"}
 
 class WeatherDto {
   Meta _meta;
   Altimeter _altimeter;
+  List<Clouds> _clouds;
   String _flightRules;
   List<dynamic> _other;
   Visibility _visibility;
@@ -44,7 +45,7 @@ class WeatherDto {
 
   Meta get meta => _meta;
   Altimeter get altimeter => _altimeter;
-  //List<dynamic> get clouds => _clouds;
+  List<Clouds> get clouds => _clouds;
   String get flightRules => _flightRules;
   List<dynamic> get other => _other;
   Visibility get visibility => _visibility;
@@ -64,10 +65,10 @@ class WeatherDto {
   List<Wind_variable_direction> get windVariableDirection => _windVariableDirection;
   Units get units => _units;
 
-  WeatherDto({
+  Weather_dto({
       Meta meta, 
       Altimeter altimeter, 
-      List<dynamic> clouds, 
+      List<Clouds> clouds, 
       String flightRules, 
       List<dynamic> other, 
       Visibility visibility, 
@@ -88,7 +89,7 @@ class WeatherDto {
       Units units}){
     _meta = meta;
     _altimeter = altimeter;
-   // _clouds = clouds;
+    _clouds = clouds;
     _flightRules = flightRules;
     _other = other;
     _visibility = visibility;
@@ -112,14 +113,19 @@ class WeatherDto {
   WeatherDto.fromJson(dynamic json) {
     _meta = json["meta"] != null ? Meta.fromJson(json["meta"]) : null;
     _altimeter = json["altimeter"] != null ? Altimeter.fromJson(json["altimeter"]) : null;
-
-    // _flightRules = json["flight_rules"];
+    if (json["clouds"] != null) {
+      _clouds = [];
+      json["clouds"].forEach((v) {
+        _clouds.add(Clouds.fromJson(v));
+      });
+    }
+    _flightRules = json["flight_rules"];
     // if (json["other"] != null) {
     //   _other = [];
-    //   json["other"].forEach((v) {
-    //     _other.add(dynamic.fromJson(v));
-    //   });
-    // }
+      // json["other"].forEach((v) {
+      //   _other.add(dynamic.fromJson(v));
+      // });
+    //}
     _visibility = json["visibility"] != null ? Visibility.fromJson(json["visibility"]) : null;
     _windDirection = json["wind_direction"] != null ? Wind_direction.fromJson(json["wind_direction"]) : null;
     _windGust = json["wind_gust"];
@@ -161,9 +167,9 @@ class WeatherDto {
     if (_altimeter != null) {
       map["altimeter"] = _altimeter.toJson();
     }
-    // if (_clouds != null) {
-    //   map["clouds"] = _clouds.map((v) => v.toJson()).toList();
-    // }
+    if (_clouds != null) {
+      map["clouds"] = _clouds.map((v) => v.toJson()).toList();
+    }
     map["flight_rules"] = _flightRules;
     if (_other != null) {
       map["other"] = _other.map((v) => v.toJson()).toList();
@@ -263,9 +269,9 @@ class Units {
 
 }
 
-/// repr : "150"
-/// value : 150
-/// spoken : "one five zero"
+/// repr : "160"
+/// value : 160
+/// spoken : "one six zero"
 
 class Wind_variable_direction {
   String _repr;
@@ -301,9 +307,9 @@ class Wind_variable_direction {
 
 }
 
-/// repr : "22"
-/// value : 22
-/// spoken : "two two"
+/// repr : "17"
+/// value : 17
+/// spoken : "one seven"
 
 class Temperature {
   String _repr;
@@ -370,9 +376,9 @@ class Remarks_info {
 
 }
 
-/// repr : "06"
-/// value : 6
-/// spoken : "six"
+/// repr : "07"
+/// value : 7
+/// spoken : "seven"
 
 class Dewpoint {
   String _repr;
@@ -408,8 +414,8 @@ class Dewpoint {
 
 }
 
-/// repr : "221500Z"
-/// dt : "2021-05-22T15:00:00Z"
+/// repr : "230930Z"
+/// dt : "2021-05-23T09:30:00Z"
 
 class Time {
   String _repr;
@@ -477,9 +483,9 @@ class Wind_speed {
 
 }
 
-/// repr : "180"
-/// value : 180
-/// spoken : "one eight zero"
+/// repr : "210"
+/// value : 210
+/// spoken : "two one zero"
 
 class Wind_direction {
   String _repr;
@@ -515,9 +521,9 @@ class Wind_direction {
 
 }
 
-/// repr : "CAVOK"
+/// repr : "9999"
 /// value : 9999
-/// spoken : "ceiling and visibility ok"
+/// spoken : "nine nine nine nine"
 
 class Visibility {
   String _repr;
@@ -553,9 +559,61 @@ class Visibility {
 
 }
 
-/// repr : "Q1013"
-/// value : 1013
-/// spoken : "one zero one three"
+/// repr : "BKN049"
+/// type : "BKN"
+/// altitude : 49
+/// modifier : null
+/// direction : null
+
+class Clouds {
+  String _repr;
+  String _type;
+  int _altitude;
+  dynamic _modifier;
+  dynamic _direction;
+
+  String get repr => _repr;
+  String get type => _type;
+  int get altitude => _altitude;
+  dynamic get modifier => _modifier;
+  dynamic get direction => _direction;
+
+  Clouds({
+      String repr, 
+      String type, 
+      int altitude, 
+      dynamic modifier, 
+      dynamic direction}){
+    _repr = repr;
+    _type = type;
+    _altitude = altitude;
+    _modifier = modifier;
+    _direction = direction;
+}
+
+  Clouds.fromJson(dynamic json) {
+    _repr = json["repr"];
+    _type = json["type"];
+    _altitude = json["altitude"];
+    _modifier = json["modifier"];
+    _direction = json["direction"];
+  }
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    map["repr"] = _repr;
+    map["type"] = _type;
+    map["altitude"] = _altitude;
+    map["modifier"] = _modifier;
+    map["direction"] = _direction;
+    return map;
+  }
+
+}
+
+/// repr : "Q1016"
+/// value : 1016
+/// spoken : "one zero one six"
 
 class Altimeter {
   String _repr;
@@ -591,7 +649,7 @@ class Altimeter {
 
 }
 
-/// timestamp : "2021-05-22T15:13:43.657553Z"
+/// timestamp : "2021-05-23T09:59:49.336568Z"
 /// stations_updated : "2021-04-23"
 
 class Meta {

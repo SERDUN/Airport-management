@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
             );
           case MainNavigatorRoutes.weather:
             return MaterialPageRoute(
-              builder: (context) => GetIt.I.get<BlocProvider<WeatherBloc>>(),
+              builder: (context) => GetIt.I.get<BlocProvider<WeatherBloc>>(param1: settings.arguments),
             );
           default:
             return MaterialPageRoute(
