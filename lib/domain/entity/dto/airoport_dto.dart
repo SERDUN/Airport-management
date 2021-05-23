@@ -100,4 +100,13 @@ class AirportDTO {
     return map;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AirportDTO &&
+          runtimeType == other.runtimeType &&
+          _codeIataAirport == other._codeIataAirport;
+
+  @override
+  int get hashCode => _codeIataAirport.hashCode;
 }

@@ -16,6 +16,8 @@ import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
 import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCase.dart';
 import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/DeleteAirportFromBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/DeleteAirportFromBookmarkUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/GetAirportsFromBookmarkUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/GetAirportsFromBookmarksUseCase.dart';
 import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
@@ -116,13 +118,21 @@ class DiInjector {
             GetIt.I.get<LocationRepository>(),
             GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
 
+    GetIt.I.registerFactory<DeleteAirportFromBookmarkUseCase>(() =>
+        DeleteAirportFromBookmarkUseCaseImp(
+            GetIt.I.get<BaseRepository>(),
+            GetIt.I.get<LocationRepository>(),
+            GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
+
     return Future.value();
   }
 
   static Future injectPages() {
     GetIt.I.registerFactory<BlocProvider<SavedBloc>>(() => BlocProvider(
-          create: (BuildContext context) =>
-              SavedBloc(GetIt.I.get<GetAirportsFromBookmarkUseCase>()),
+          create: (BuildContext context) => SavedBloc(
+              GetIt.I.get<GetAirportsFromBookmarkUseCase>(),
+              deleteAirportFromBookmarkUseCase:
+                  GetIt.I.get<DeleteAirportFromBookmarkUseCase>()),
           child: SavedPage(),
         ));
 
@@ -137,10 +147,11 @@ class DiInjector {
           child: SplashPage(),
         ));
 
-    GetIt.I.registerFactoryParam<BlocProvider<WeatherBloc>, WeatherModel, AirportModel>(
+    GetIt.I.registerFactoryParam<
+            BlocProvider<WeatherBloc>, WeatherModel, AirportModel>(
         (model, airportModel) => BlocProvider(
-              create: (BuildContext context) => WeatherBloc(
-                  model, GetIt.I.get<AddAirportToBookmarkUseCase>(),airportModel),
+              create: (BuildContext context) => WeatherBloc(model,
+                  GetIt.I.get<AddAirportToBookmarkUseCase>(), airportModel),
               child: WeatherPage(),
             ));
 
@@ -148,6 +159,8 @@ class DiInjector {
           create: (BuildContext context) => AirportsBloc(
             GetIt.I.get<GetNearbyAirportsUseCase>(),
             GetIt.I.get<GetWeatherUseCase>(),
+            addAirportToBookmarkUseCase:
+                GetIt.I.get<AddAirportToBookmarkUseCase>(),
           ),
           child: AirportsPage(),
         ));

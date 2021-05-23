@@ -15,3 +15,9 @@ class FindWeatherByCodeEvent implements AirportsEvent {
 
   FindWeatherByCodeEvent(this.code);
 }
+
+class AddAirportTooBookmarkEvent extends AirportsEvent {
+  final AirportModel airport;
+
+  AddAirportTooBookmarkEvent(this.airport);
+}

@@ -1,6 +1,8 @@
 import 'package:Aevius/presenter/argument/weather_airports_arg.dart';
 import 'package:Aevius/presenter/common/dialogs/dialog_delegate.dart';
+import 'package:Aevius/presenter/common/style/thema.dart';
 import 'package:Aevius/presenter/common/ui/base_indicator.dart';
+import 'package:Aevius/presenter/pages/root/airports/airoport_item_widget.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -38,7 +40,10 @@ class _AirportsPageState extends State<AirportsPage> {
       children: [
         Container(
             margin: EdgeInsets.all(16),
-            child: Text("Look weather by airport key")),
+            child: Text(
+              "Look weather by airport key",
+              style: h20BlackStyle,
+            )),
         Container(
           margin: EdgeInsets.all(16),
           child: Row(children: [
@@ -65,8 +70,11 @@ class _AirportsPageState extends State<AirportsPage> {
         ),
         Container(
             margin: EdgeInsets.all(16),
-            child: Text("Nearby "
-                "airports")),
+            child: Text(
+              "Nearby "
+              "airports",
+              style: h20BlackStyle,
+            )),
         buildNearbyAirportsPage()
       ],
     ));
@@ -79,6 +87,13 @@ class _AirportsPageState extends State<AirportsPage> {
           Navigator.pushNamed(context, MainNavigatorRoutes.weather,
               arguments:
                   WeatherAirportArg(state.weatherModel, state.selectedAirport));
+        }
+
+        if (state is AirportWasAddedToBookmark) {
+          dialogDelegate
+              .of(context)
+              .initTitle("Airport added to bookmark")
+              .showInfoSnakeBar();
         }
 
         if (state is AirportFailureState) {
@@ -98,12 +113,13 @@ class _AirportsPageState extends State<AirportsPage> {
               itemCount: state.airports.length,
               itemBuilder: (context, index) {
                 var airport = state.airports[index];
-                return InkWell(
-                  child: ListTile(
-                    title: Text('${airport.name}'),
-                  ),
-                  onTap: () {
+                return AirportItemWidget(
+                  airportModel: airport,
+                  callback: (model) {
                     _bloc.add(LoadWeatherForAirport(airport));
+                  },
+                  addToBookmark: (model) {
+                    _bloc.add(AddAirportTooBookmarkEvent(model));
                   },
                 );
               },

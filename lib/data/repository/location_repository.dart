@@ -72,7 +72,7 @@ class LocationRepositoryImpl implements LocationRepository {
   Future<Either<Failure, LocationModel>> getCurrentLocation() async {
     try {
       var lastPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: desiredAccuracy, timeLimit: Duration(seconds: 5));
+          desiredAccuracy: desiredAccuracy, timeLimit: Duration(seconds: 25));
       return Future.value(Right(LocationModel(
           lat: lastPosition.latitude, lng: lastPosition.longitude)));
     } catch (e) {

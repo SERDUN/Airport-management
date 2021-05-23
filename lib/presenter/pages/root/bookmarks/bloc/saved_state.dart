@@ -36,3 +36,14 @@ class AirportFailureState extends SavedState {
   List<Object> get props =>
       [airports, DateTime.now().microsecondsSinceEpoch, message];
 }
+
+class AirportMessageState extends SavedState {
+  final String message;
+
+  AirportMessageState(List<AirportModel> airports, this.message)
+      : super(airports);
+
+  @override
+  List<Object> get props =>
+      [airports, DateTime.now().microsecondsSinceEpoch, message];
+}

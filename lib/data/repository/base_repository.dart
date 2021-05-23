@@ -17,14 +17,20 @@ class BaseRepositoryImpl extends BaseRepository {
   final RestClient restClientWeather;
   final LocalStorage localStorage;
 
-  BaseRepositoryImpl(this.aviationKey, this.weatherKey, this.restClientAirPorts,
-      this.restClientWeather, this.localStorage, );
+  BaseRepositoryImpl(
+    this.aviationKey,
+    this.weatherKey,
+    this.restClientAirPorts,
+    this.restClientWeather,
+    this.localStorage,
+  );
 
   @override
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng) async {
     Response response = await restClientAirPorts.get(
-        "/nearby?key=$aviationKey&lat=46.482952&lng=30.712481&distance=100",);
+      "/nearby?key=$aviationKey&lat=46.482952&lng=30.712481&distance=100",
+    );
     if (response.statusCode < 300) {
       try {
         return Right(airportToList(response.data));
@@ -82,6 +88,18 @@ class BaseRepositoryImpl extends BaseRepository {
   Future<Either<Failure, List<AirportDTO>>> getAirportsFromBookmark() async {
     try {
       return Future.value(Right(localStorage.getSavedAirports()));
+    } catch (e) {
+      return Future.value(
+          Left(ErrorMessage("Airport did not save because $e")));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<AirportDTO>>> deleteAirportFromBookmark(
+      AirportDTO airportDTO) async {
+    try {
+      var result = await localStorage.deleteAirportFromBookmark(airportDTO);
+      return Future.value(Right(result));
     } catch (e) {
       return Future.value(
           Left(ErrorMessage("Airport did not save because $e")));

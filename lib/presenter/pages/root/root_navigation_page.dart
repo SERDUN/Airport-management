@@ -62,7 +62,7 @@ class _RootPageState extends State<RootPage>
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
-            label: 'Saved',
+            label: 'Bookmarks',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

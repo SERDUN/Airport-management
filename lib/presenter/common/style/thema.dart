@@ -10,7 +10,7 @@ const green = Color(0xff469B93);
 const lune_dark = Color(0xff0A6666);
 const lune_light = Color(0xffC2D2D1);
 const text_main = Color(0xff5C5C5C);
-const clor = Color(0xffC5C5C5);
+const color__light_grey = Color(0xffC5C5C5);
 const orange = Color(0xffFF9408);
 const light = Color(0xffF7F6EC);
 const error_red = Color(0xffFD3A3A);
@@ -34,9 +34,21 @@ const h15White = TextStyle(
   fontSize: 15.0,
   color: Colors.white,
 );
-const h14White = TextStyle(
+const h14Black = TextStyle(
   fontSize: 14.0,
-  color: Colors.white,
+  color: label_dark,
+);
+const h16Black = TextStyle(
+  fontSize: 16.0,
+  color: label_dark,
+);
+const h14LightGrey = TextStyle(
+  fontSize: 14.0,
+  color: color__light_grey,
+);
+const h14Grey = TextStyle(
+  fontSize: 14.0,
+  color: color_grey,
 );
 
 const bigBlackStyle = TextStyle(
@@ -56,9 +68,9 @@ const h16InactiveStyle = TextStyle(
     letterSpacing: 0.7,
   );
 
-const h32LightStyle = TextStyle(
-  fontSize: 32.0,
-  color: light_text,
+const h20BlackStyle = TextStyle(
+  fontSize: 20.0,
+  color: secondary_text,
 );
 
 const h14main = TextStyle(

@@ -1,4 +1,6 @@
 import 'package:Aevius/presenter/common/dialogs/dialog_delegate.dart';
+import 'package:Aevius/presenter/common/style/thema.dart';
+import 'package:Aevius/presenter/pages/root/bookmarks/airoport_item_widget.dart';
 import 'package:Aevius/presenter/common/ui/base_indicator.dart';
 import 'package:Aevius/presenter/pages/root/bookmarks/bookmark_empty_state.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
@@ -44,28 +46,48 @@ class _WeatherPageState extends State<SavedPage> {
                   .initActionTitle1("oK")
                   .showInfoDialog();
             }
+            if (state is AirportMessageState) {
+              dialogDelegate
+                  .of(context)
+                  .initTitle(state.message)
+                  .showInfoSnakeBar();
+            }
           },
           child: BlocBuilder<SavedBloc, SavedState>(builder: (ctx, state) {
             if (state is SavedInitial) return BaseIndicator();
             if (state is AirportsEmptyState)
               return BookmarkEmptyState();
             else
-              return ListView.builder(
-                itemCount: state.airports.length,
-                itemBuilder: (context, index) {
-                  var airport = state.airports[index];
-                  return InkWell(
-                    child: ListTile(
-                      title: Text('${airport.name}'),
-                    ),
-                    onTap: () {
-                      // _bloc.add(LoadWeatherForAirport(airport));
-                    },
-                  );
-                },
-              );
+              return buildListView(state);
             //  return child: emptyState()));
           }),
         ))));
+  }
+
+  Widget buildListView(SavedState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.all(16),
+          child: Text(
+            "Your saved airports",
+            style: h20BlackStyle,
+          ),
+        ),
+        Expanded(
+            child: ListView.builder(
+          itemCount: state.airports.length,
+          itemBuilder: (context, index) {
+            var airport = state.airports[index];
+            return AirportItemWidget(
+              airportModel: airport,
+              onDelete: (model) =>
+                  _bloc.add(DeleteAirportFromBookmarksEvent(model)),
+            );
+          },
+        ))
+      ],
+    );
   }
 }

@@ -12,8 +12,9 @@ class LocalStorage {
 
   List<AirportDTO> getSavedAirports() {
     if (sharedPreferences.containsKey(airportsKey)) {
-      var json = sharedPreferences.get(airportsKey);
-      var obj = airportToList(json);
+      var json = sharedPreferences.getString(airportsKey);
+      var decoded = jsonDecode(json);
+      var obj = airportToList(decoded);
       return obj;
     } else {
       return [];
@@ -27,6 +28,18 @@ class LocalStorage {
       return sharedPreferences.setString(airportsKey, jsonEncode(airports));
     } else {
       return sharedPreferences.setString(airportsKey, jsonEncode([airport]));
+    }
+  }
+
+  Future<List<AirportDTO>> deleteAirportFromBookmark(AirportDTO airport) async {
+    if (sharedPreferences.containsKey(airportsKey)) {
+      var airports = getSavedAirports();
+      var index = airports.indexOf(airport);
+      airports.removeAt(index);
+      await sharedPreferences.setString(airportsKey, jsonEncode(airports));
+      return Future.value(airports);
+    } else {
+      return Future.value([]);
     }
   }
 }
