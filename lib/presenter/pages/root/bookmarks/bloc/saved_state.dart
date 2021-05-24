@@ -36,6 +36,16 @@ class AirportFailureState extends SavedState {
   List<Object> get props =>
       [airports, DateTime.now().microsecondsSinceEpoch, message];
 }
+class WeatherLoaded extends SavedState {
+  final WeatherModel weatherModel;
+  final AirportModel selectedAirport;
+
+  WeatherLoaded(List<AirportModel> airports, this.weatherModel, this.selectedAirport)
+      : super(airports);
+
+  @override
+  List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch];
+}
 
 class AirportMessageState extends SavedState {
   final String message;

@@ -130,9 +130,11 @@ class DiInjector {
   static Future injectPages() {
     GetIt.I.registerFactory<BlocProvider<SavedBloc>>(() => BlocProvider(
           create: (BuildContext context) => SavedBloc(
-              GetIt.I.get<GetAirportsFromBookmarkUseCase>(),
-              deleteAirportFromBookmarkUseCase:
-                  GetIt.I.get<DeleteAirportFromBookmarkUseCase>()),
+            GetIt.I.get<GetAirportsFromBookmarkUseCase>(),
+            GetIt.I.get<GetWeatherUseCase>(),
+            deleteAirportFromBookmarkUseCase:
+                GetIt.I.get<DeleteAirportFromBookmarkUseCase>(),
+          ),
           child: SavedPage(),
         ));
 

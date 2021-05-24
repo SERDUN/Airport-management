@@ -31,10 +31,10 @@ class AirportItemWidget extends StatelessWidget {
                     style: h16Black,
                   ),
                   SizedBox(
-                    height: 8,
+                    height: 16,
                   ),
                   buildRow("Airport code: : ", airportModel.code),
-                  buildRow("Distance: ", airportModel.distance),
+                  buildRow("Distance: ", airportModel.distance.toString()),
                   buildRow("Country: ", airportModel.country),
                   buildRow("Time zone: ", airportModel.timeZone)
                 ],
@@ -56,17 +56,20 @@ class AirportItemWidget extends StatelessWidget {
   Widget buildRow(String title, String value) {
     return (title == null || value == null)
         ? SizedBox()
-        : Row(
-            children: [
-              Text(
-                title,
-                style: h14LightGrey,
-              ),
-              Text(
-                value,
-                style: h14Grey,
-              )
-            ],
-          );
+        : Container(
+      margin: EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: h14LightGrey,
+          ),
+          Text(
+            value,
+            style: h14Grey,
+          )
+        ],
+      ),
+    );
   }
 }

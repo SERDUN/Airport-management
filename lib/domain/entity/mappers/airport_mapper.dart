@@ -8,13 +8,16 @@ class AirportMapper extends Mapper<AirportDTO, AirportModel> {
     return AirportDTO(
         nameAirport: model.name,
         codeIcaoAirport: model.code,
-        codeIataAirport: model.code);
+        codeIataAirport: model.code,
+        distance: model.distance,
+        nameCountry: model.country,
+        timezone: model.timeZone);
   }
 
   @override
   AirportModel mapToModel(AirportDTO dto) {
     return AirportModel(dto.nameAirport, dto.codeIataAirport,
-        distance: dto.distance != null ? dto.distance.toString() : null,
+        distance: dto.distance != null ? dto.distance : null,
         timeZone: dto.timezone,
         country: dto.nameCountry);
   }

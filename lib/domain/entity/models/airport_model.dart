@@ -3,7 +3,7 @@ class AirportModel {
   final String code;
   final String timeZone;
   final String country;
-  final String distance;
+  final double distance;
 
   AirportModel(this.name, this.code,
       {this.timeZone, this.country, this.distance});

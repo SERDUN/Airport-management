@@ -1,5 +1,6 @@
 import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/presenter/common/style/thema.dart';
+import 'package:Aevius/presenter/common/ui/row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -33,10 +34,10 @@ class AirportItemWidget extends StatelessWidget {
                   SizedBox(
                     height: 16,
                   ),
-                  buildRow("Airport code: : ", airportModel.code),
-                  buildRow("Distance: ", airportModel.distance),
-                  buildRow("Country: ", airportModel.country),
-                  buildRow("Time zone: ", airportModel.timeZone)
+                  RowWidget("Airport code: : ", airportModel.code),
+                  RowWidget("Distance: ", airportModel.distance.toString()),
+                  RowWidget("Country: ", airportModel.country),
+                  RowWidget("Time zone: ", airportModel.timeZone)
                 ],
               )),
               IconButton(
@@ -52,23 +53,5 @@ class AirportItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildRow(String title, String value) {
-    return (title == null || value == null)
-        ? SizedBox()
-        : Container(
-      margin: EdgeInsets.only(top: 8),
-            child: Row(
-              children: [
-                Text(
-                  title,
-                  style: h14LightGrey,
-                ),
-                Text(
-                  value,
-                  style: h14Grey,
-                )
-              ],
-            ),
-          );
-  }
+
 }

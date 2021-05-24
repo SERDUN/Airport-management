@@ -1,3 +1,4 @@
+import 'package:Aevius/presenter/argument/weather_airports_arg.dart';
 import 'package:Aevius/presenter/common/dialogs/dialog_delegate.dart';
 import 'package:Aevius/presenter/common/style/thema.dart';
 import 'package:Aevius/presenter/pages/root/bookmarks/airoport_item_widget.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../main_routes.dart';
 import 'bloc/saved_bloc.dart';
 
 class SavedPage extends StatefulWidget {
@@ -38,6 +40,12 @@ class _WeatherPageState extends State<SavedPage> {
             body: SafeArea(
                 child: BlocListener<SavedBloc, SavedState>(
           listener: (ctx, state) {
+            if (state is WeatherLoaded) {
+              Navigator.pushNamed(context, MainNavigatorRoutes.weather,
+                  arguments: WeatherAirportArg(
+                      state.weatherModel, state.selectedAirport));
+            }
+
             if (state is AirportFailureState) {
               dialogDelegate
                   .of(context)
@@ -82,6 +90,7 @@ class _WeatherPageState extends State<SavedPage> {
             var airport = state.airports[index];
             return AirportItemWidget(
               airportModel: airport,
+              callback: (model) => _bloc.add(LoadWeatherForAirport(model)),
               onDelete: (model) =>
                   _bloc.add(DeleteAirportFromBookmarksEvent(model)),
             );

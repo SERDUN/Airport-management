@@ -17,7 +17,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   WeatherBloc(
       this.weatherModel, this.addAirportToBookmarkUseCase, this.airportModel)
-      : super(WeatherInitial(weatherModel));
+      : super(WeatherInitial(weatherModel,airportModel));
 
   @override
   Stream<WeatherState> mapEventToState(
@@ -29,15 +29,15 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Stream<WeatherState> handleAddingToBookmark(
       AirportModel airportModel) async* {
-    yield WeatherProgress(weatherModel);
+    yield WeatherProgress(weatherModel,airportModel);
     var airportsResult =
         await addAirportToBookmarkUseCase.execute(airportModel);
 
     if (airportsResult.isLeft)
       yield WeatherFailureState(
-          state.weatherModel, airportsResult.left.getMessage());
+          state.weatherModel, airportsResult.left.getMessage(),airportModel);
 
     if (airportsResult.isRight)
-      yield AirportWasAddedToBookmark(state.weatherModel);
+      yield AirportWasAddedToBookmark(state.weatherModel,airportModel);
   }
 }

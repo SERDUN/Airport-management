@@ -11,3 +11,9 @@ class DeleteAirportFromBookmarksEvent extends SavedEvent {
 
   DeleteAirportFromBookmarksEvent(this.model);
 }
+
+class LoadWeatherForAirport implements SavedEvent {
+  final AirportModel airport;
+  LoadWeatherForAirport(this.airport);
+}
+

@@ -18,8 +18,8 @@ part 'airports_event.dart';
 part 'airports_state.dart';
 
 class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
-  GetNearbyAirportsUseCase getNearbyAirportsUseCase;
-  GetWeatherUseCase getWeatherUseCase;
+  final GetNearbyAirportsUseCase getNearbyAirportsUseCase;
+  final GetWeatherUseCase getWeatherUseCase;
   final AddAirportToBookmarkUseCase addAirportToBookmarkUseCase;
 
   AirportsBloc(this.getNearbyAirportsUseCase, this.getWeatherUseCase,
