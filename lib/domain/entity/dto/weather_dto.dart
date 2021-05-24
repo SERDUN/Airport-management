@@ -44,49 +44,70 @@ class WeatherDto {
   Units _units;
 
   Meta get meta => _meta;
+
   Altimeter get altimeter => _altimeter;
+
   List<Clouds> get clouds => _clouds;
+
   String get flightRules => _flightRules;
+
   List<dynamic> get other => _other;
+
   Visibility get visibility => _visibility;
+
   Wind_direction get windDirection => _windDirection;
+
   dynamic get windGust => _windGust;
+
   Wind_speed get windSpeed => _windSpeed;
+
   List<dynamic> get wxCodes => _wxCodes;
+
   String get raw => _raw;
+
   String get sanitized => _sanitized;
+
   String get station => _station;
+
   Time get time => _time;
+
   String get remarks => _remarks;
+
   Dewpoint get dewpoint => _dewpoint;
+
   Remarks_info get remarksInfo => _remarksInfo;
+
   List<dynamic> get runwayVisibility => _runwayVisibility;
+
   Temperature get temperature => _temperature;
-  List<Wind_variable_direction> get windVariableDirection => _windVariableDirection;
+
+  List<Wind_variable_direction> get windVariableDirection =>
+      _windVariableDirection;
+
   Units get units => _units;
 
-  Weather_dto({
-      Meta meta, 
-      Altimeter altimeter, 
-      List<Clouds> clouds, 
-      String flightRules, 
-      List<dynamic> other, 
-      Visibility visibility, 
-      Wind_direction windDirection, 
-      dynamic windGust, 
-      Wind_speed windSpeed, 
-      List<dynamic> wxCodes, 
-      String raw, 
-      String sanitized, 
-      String station, 
-      Time time, 
-      String remarks, 
-      Dewpoint dewpoint, 
-      Remarks_info remarksInfo, 
-      List<dynamic> runwayVisibility, 
-      Temperature temperature, 
-      List<Wind_variable_direction> windVariableDirection, 
-      Units units}){
+  Weather_dto(
+      {Meta meta,
+      Altimeter altimeter,
+      List<Clouds> clouds,
+      String flightRules,
+      List<dynamic> other,
+      Visibility visibility,
+      Wind_direction windDirection,
+      dynamic windGust,
+      Wind_speed windSpeed,
+      List<dynamic> wxCodes,
+      String raw,
+      String sanitized,
+      String station,
+      Time time,
+      String remarks,
+      Dewpoint dewpoint,
+      Remarks_info remarksInfo,
+      List<dynamic> runwayVisibility,
+      Temperature temperature,
+      List<Wind_variable_direction> windVariableDirection,
+      Units units}) {
     _meta = meta;
     _altimeter = altimeter;
     _clouds = clouds;
@@ -108,11 +129,13 @@ class WeatherDto {
     _temperature = temperature;
     _windVariableDirection = windVariableDirection;
     _units = units;
-}
+  }
 
   WeatherDto.fromJson(dynamic json) {
     _meta = json["meta"] != null ? Meta.fromJson(json["meta"]) : null;
-    _altimeter = json["altimeter"] != null ? Altimeter.fromJson(json["altimeter"]) : null;
+    _altimeter = json["altimeter"] != null
+        ? Altimeter.fromJson(json["altimeter"])
+        : null;
     if (json["clouds"] != null) {
       _clouds = [];
       json["clouds"].forEach((v) {
@@ -122,14 +145,20 @@ class WeatherDto {
     _flightRules = json["flight_rules"];
     // if (json["other"] != null) {
     //   _other = [];
-      // json["other"].forEach((v) {
-      //   _other.add(dynamic.fromJson(v));
-      // });
+    // json["other"].forEach((v) {
+    //   _other.add(dynamic.fromJson(v));
+    // });
     //}
-    _visibility = json["visibility"] != null ? Visibility.fromJson(json["visibility"]) : null;
-    _windDirection = json["wind_direction"] != null ? Wind_direction.fromJson(json["wind_direction"]) : null;
+    _visibility = json["visibility"] != null
+        ? Visibility.fromJson(json["visibility"])
+        : null;
+    _windDirection = json["wind_direction"] != null
+        ? Wind_direction.fromJson(json["wind_direction"])
+        : null;
     _windGust = json["wind_gust"];
-    _windSpeed = json["wind_speed"] != null ? Wind_speed.fromJson(json["wind_speed"]) : null;
+    _windSpeed = json["wind_speed"] != null
+        ? Wind_speed.fromJson(json["wind_speed"])
+        : null;
     // if (json["wx_codes"] != null) {
     //   _wxCodes = [];
     //   json["wx_codes"].forEach((v) {
@@ -141,15 +170,20 @@ class WeatherDto {
     _station = json["station"];
     _time = json["time"] != null ? Time.fromJson(json["time"]) : null;
     _remarks = json["remarks"];
-    _dewpoint = json["dewpoint"] != null ? Dewpoint.fromJson(json["dewpoint"]) : null;
-    _remarksInfo = json["remarks_info"] != null ? Remarks_info.fromJson(json["remarks_info"]) : null;
+    _dewpoint =
+        json["dewpoint"] != null ? Dewpoint.fromJson(json["dewpoint"]) : null;
+    _remarksInfo = json["remarks_info"] != null
+        ? Remarks_info.fromJson(json["remarks_info"])
+        : null;
     // if (json["runway_visibility"] != null) {
     //   _runwayVisibility = [];
     //   json["runway_visibility"].forEach((v) {
     //     _runwayVisibility.add(dynamic.fromJson(v));
     //   });
     // }
-    _temperature = json["temperature"] != null ? Temperature.fromJson(json["temperature"]) : null;
+    _temperature = json["temperature"] != null
+        ? Temperature.fromJson(json["temperature"])
+        : null;
     if (json["wind_variable_direction"] != null) {
       _windVariableDirection = [];
       json["wind_variable_direction"].forEach((v) {
@@ -201,20 +235,21 @@ class WeatherDto {
       map["remarks_info"] = _remarksInfo.toJson();
     }
     if (_runwayVisibility != null) {
-      map["runway_visibility"] = _runwayVisibility.map((v) => v.toJson()).toList();
+      map["runway_visibility"] =
+          _runwayVisibility.map((v) => v.toJson()).toList();
     }
     if (_temperature != null) {
       map["temperature"] = _temperature.toJson();
     }
     if (_windVariableDirection != null) {
-      map["wind_variable_direction"] = _windVariableDirection.map((v) => v.toJson()).toList();
+      map["wind_variable_direction"] =
+          _windVariableDirection.map((v) => v.toJson()).toList();
     }
     if (_units != null) {
       map["units"] = _units.toJson();
     }
     return map;
   }
-
 }
 
 /// altimeter : "hPa"
@@ -231,23 +266,27 @@ class Units {
   String _windSpeed;
 
   String get altimeter => _altimeter;
+
   String get altitude => _altitude;
+
   String get temperature => _temperature;
+
   String get visibility => _visibility;
+
   String get windSpeed => _windSpeed;
 
-  Units({
-      String altimeter, 
-      String altitude, 
-      String temperature, 
-      String visibility, 
-      String windSpeed}){
+  Units(
+      {String altimeter,
+      String altitude,
+      String temperature,
+      String visibility,
+      String windSpeed}) {
     _altimeter = altimeter;
     _altitude = altitude;
     _temperature = temperature;
     _visibility = visibility;
     _windSpeed = windSpeed;
-}
+  }
 
   Units.fromJson(dynamic json) {
     _altimeter = json["altimeter"];
@@ -266,7 +305,6 @@ class Units {
     map["wind_speed"] = _windSpeed;
     return map;
   }
-
 }
 
 /// repr : "160"
@@ -279,17 +317,16 @@ class Wind_variable_direction {
   String _spoken;
 
   String get repr => _repr;
+
   int get value => _value;
+
   String get spoken => _spoken;
 
-  Wind_variable_direction({
-      String repr, 
-      int value, 
-      String spoken}){
+  Wind_variable_direction({String repr, int value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Wind_variable_direction.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -304,7 +341,6 @@ class Wind_variable_direction {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// repr : "17"
@@ -317,17 +353,16 @@ class Temperature {
   String _spoken;
 
   String get repr => _repr;
+
   int get value => _value;
+
   String get spoken => _spoken;
 
-  Temperature({
-      String repr, 
-      int value, 
-      String spoken}){
+  Temperature({String repr, int value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Temperature.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -342,7 +377,6 @@ class Temperature {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// dewpoint_decimal : null
@@ -353,14 +387,13 @@ class Remarks_info {
   dynamic _temperatureDecimal;
 
   dynamic get dewpointDecimal => _dewpointDecimal;
+
   dynamic get temperatureDecimal => _temperatureDecimal;
 
-  Remarks_info({
-      dynamic dewpointDecimal, 
-      dynamic temperatureDecimal}){
+  Remarks_info({dynamic dewpointDecimal, dynamic temperatureDecimal}) {
     _dewpointDecimal = dewpointDecimal;
     _temperatureDecimal = temperatureDecimal;
-}
+  }
 
   Remarks_info.fromJson(dynamic json) {
     _dewpointDecimal = json["dewpoint_decimal"];
@@ -373,7 +406,6 @@ class Remarks_info {
     map["temperature_decimal"] = _temperatureDecimal;
     return map;
   }
-
 }
 
 /// repr : "07"
@@ -386,17 +418,16 @@ class Dewpoint {
   String _spoken;
 
   String get repr => _repr;
+
   int get value => _value;
+
   String get spoken => _spoken;
 
-  Dewpoint({
-      String repr, 
-      int value, 
-      String spoken}){
+  Dewpoint({String repr, int value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Dewpoint.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -411,7 +442,6 @@ class Dewpoint {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// repr : "230930Z"
@@ -422,14 +452,13 @@ class Time {
   String _dt;
 
   String get repr => _repr;
+
   String get dt => _dt;
 
-  Time({
-      String repr, 
-      String dt}){
+  Time({String repr, String dt}) {
     _repr = repr;
     _dt = dt;
-}
+  }
 
   Time.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -442,7 +471,6 @@ class Time {
     map["dt"] = _dt;
     return map;
   }
-
 }
 
 /// repr : "03"
@@ -455,17 +483,16 @@ class Wind_speed {
   String _spoken;
 
   String get repr => _repr;
+
   int get value => _value;
+
   String get spoken => _spoken;
 
-  Wind_speed({
-      String repr, 
-      int value, 
-      String spoken}){
+  Wind_speed({String repr, int value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Wind_speed.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -480,7 +507,6 @@ class Wind_speed {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// repr : "210"
@@ -493,17 +519,16 @@ class Wind_direction {
   String _spoken;
 
   String get repr => _repr;
+
   int get value => _value;
+
   String get spoken => _spoken;
 
-  Wind_direction({
-      String repr, 
-      int value, 
-      String spoken}){
+  Wind_direction({String repr, int value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Wind_direction.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -518,7 +543,6 @@ class Wind_direction {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// repr : "9999"
@@ -531,17 +555,16 @@ class Visibility {
   String _spoken;
 
   String get repr => _repr;
+
   int get value => _value;
+
   String get spoken => _spoken;
 
-  Visibility({
-      String repr, 
-      int value, 
-      String spoken}){
+  Visibility({String repr, int value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Visibility.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -556,7 +579,6 @@ class Visibility {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// repr : "BKN049"
@@ -573,23 +595,27 @@ class Clouds {
   dynamic _direction;
 
   String get repr => _repr;
+
   String get type => _type;
+
   int get altitude => _altitude;
+
   dynamic get modifier => _modifier;
+
   dynamic get direction => _direction;
 
-  Clouds({
-      String repr, 
-      String type, 
-      int altitude, 
-      dynamic modifier, 
-      dynamic direction}){
+  Clouds(
+      {String repr,
+      String type,
+      int altitude,
+      dynamic modifier,
+      dynamic direction}) {
     _repr = repr;
     _type = type;
     _altitude = altitude;
     _modifier = modifier;
     _direction = direction;
-}
+  }
 
   Clouds.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -608,7 +634,6 @@ class Clouds {
     map["direction"] = _direction;
     return map;
   }
-
 }
 
 /// repr : "Q1016"
@@ -621,17 +646,16 @@ class Altimeter {
   String _spoken;
 
   String get repr => _repr;
+
   String get value => _value;
+
   String get spoken => _spoken;
 
-  Altimeter({
-      String repr, 
-      String value,
-      String spoken}){
+  Altimeter({String repr, String value, String spoken}) {
     _repr = repr;
     _value = value;
     _spoken = spoken;
-}
+  }
 
   Altimeter.fromJson(dynamic json) {
     _repr = json["repr"];
@@ -646,7 +670,6 @@ class Altimeter {
     map["spoken"] = _spoken;
     return map;
   }
-
 }
 
 /// timestamp : "2021-05-23T09:59:49.336568Z"
@@ -657,18 +680,17 @@ class Meta {
   String _stationsUpdated;
 
   String get timestamp => _timestamp;
+
   String get stationsUpdated => _stationsUpdated;
 
-  Meta({
-      String timestamp, 
-      String stationsUpdated}){
+  Meta({String timestamp, String stationsUpdated}) {
     _timestamp = timestamp;
     _stationsUpdated = stationsUpdated;
-}
+  }
 
   Meta.fromJson(dynamic json) {
-    _timestamp = json["timestamp"];
-    _stationsUpdated = json["stations_updated"];
+    _timestamp = json["timestamp"].toString();
+    _stationsUpdated = json["stations_updated"].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -677,5 +699,4 @@ class Meta {
     map["stations_updated"] = _stationsUpdated;
     return map;
   }
-
 }

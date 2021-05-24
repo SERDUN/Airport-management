@@ -47,10 +47,10 @@ class _RootPageState extends State<RootPage>
               child: widget.bookmark,
               offstage: _selectedIndex != 1,
             ),
-            Offstage(
-              child: widget.settings,
-              offstage: _selectedIndex != 2,
-            )
+            // Offstage(
+            //   child: widget.settings,
+            //   offstage: _selectedIndex != 2,
+            // )
           ],
         ),
       ),
@@ -64,10 +64,10 @@ class _RootPageState extends State<RootPage>
             icon: Icon(Icons.bookmark),
             label: 'Bookmarks',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.settings),
+          //   label: 'Settings',
+          // ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue.withOpacity(0.9),

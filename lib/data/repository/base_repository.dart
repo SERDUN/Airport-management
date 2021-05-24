@@ -29,7 +29,8 @@ class BaseRepositoryImpl extends BaseRepository {
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng) async {
     Response response = await restClientAirPorts.get(
-      "/nearby?key=$aviationKey&lat=46.482952&lng=30.712481&distance=100",
+      "/nearby?key=$aviationKey&lat=46.482952&lng=30"
+      ".712481&distance=1000&limit=10",
     );
     if (response.statusCode < 300) {
       try {
@@ -58,7 +59,11 @@ class BaseRepositoryImpl extends BaseRepository {
     Response response =
         await restClientWeather.get("/metar/$code?airport=true&format=json");
     if (response.statusCode < 300) {
-      return Right(WeatherDto.fromJson(response.data));
+      if (response.data == "") {
+        return Future.value(
+            Left(ErrorMessage("There is no data on this airport")));
+      } else
+        return Right(WeatherDto.fromJson(response.data));
     } else {
       var serverFailure = ServerFailure(
           response.statusCode, response.data, response.statusMessage)
