@@ -7,6 +7,7 @@ class LocalStorage {
   final SharedPreferences sharedPreferences;
 
   static const String airportsKey = "airportsKey";
+  static const String settingsKey = "settingsKey";
 
   LocalStorage(this.sharedPreferences);
 

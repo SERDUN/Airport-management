@@ -152,8 +152,11 @@ class DiInjector {
     GetIt.I.registerFactoryParam<
             BlocProvider<WeatherBloc>, WeatherModel, AirportModel>(
         (model, airportModel) => BlocProvider(
-              create: (BuildContext context) => WeatherBloc(model,
-                  GetIt.I.get<AddAirportToBookmarkUseCase>(), airportModel),
+              create: (BuildContext context) => WeatherBloc(
+                  model,
+                  GetIt.I.get<AddAirportToBookmarkUseCase>(),
+                  airportModel,
+                  GetIt.I.get<GetWeatherUseCase>()),
               child: WeatherPage(),
             ));
 

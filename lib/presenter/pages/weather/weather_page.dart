@@ -38,12 +38,21 @@ class _WeatherPageState extends State<WeatherPage> {
         }
 
         if (state is WeatherFailureState) {
+          _refreshController.refreshCompleted();
+
           dialogDelegate
               .of(context)
               .initTitle("Failure")
               .initDescription(state.message)
               .initActionTitle1("oK")
               .showInfoDialog();
+        }
+        if (state is WeatherInitial) {
+          dialogDelegate
+              .of(context)
+              .initTitle("The latest data was received from the server")
+              .showInfoSnakeBar();
+          _refreshController.refreshCompleted();
         }
       },
       child: BlocBuilder<WeatherBloc, WeatherState>(builder: (ctx, state) {
@@ -421,15 +430,11 @@ class _WeatherPageState extends State<WeatherPage> {
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF1A57AFF7),
-
             blurRadius: 10,
-
-            // has the effect of softening the shadow
             spreadRadius: 0.2,
-            // has the effect of extending the shadow
             offset: Offset(
-              0, // horizontal, move right 10
-              2, // vertical, move down 10
+              0,
+              2,
             ),
           )
         ],
@@ -437,9 +442,6 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   void _onRefresh() async {
-    // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
+    _bloc.add(FetchWeatherEvent());
   }
 }
