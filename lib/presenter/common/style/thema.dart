@@ -72,6 +72,10 @@ const h20BlackStyle = TextStyle(
   fontSize: 20.0,
   color: secondary_text,
 );
+const h16BlackStyle = TextStyle(
+  fontSize: 20.0,
+  color: secondary_text,
+);
 
 const h14main = TextStyle(
   fontSize: 14.0,

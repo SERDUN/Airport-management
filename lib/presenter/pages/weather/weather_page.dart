@@ -95,7 +95,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                       Container(
                                         child: Text(
                                           "Airport code: ${state.airportModel.code}",
-                                          style: h20BlackStyle,
+                                          style: h16BlackStyle,
                                         ),
                                       ),
                                       Divider(
@@ -104,8 +104,12 @@ class _WeatherPageState extends State<WeatherPage> {
                                       SizedBox(
                                         height: 16,
                                       ),
+                                      buildMessageAboutCriricalChanging(state),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
                                       Text(
-                                        "Station time update ",
+                                        "Time: ",
                                         style: h16Black,
                                       ),
                                       SizedBox(
@@ -120,7 +124,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                         height: 4,
                                       ),
                                       RowWidget(
-                                        "Repr: ",
+                                        "Coordinated Universal Time: ",
                                         model.timeRept,
                                         isEnabledSpacer: true,
                                       ),
@@ -135,13 +139,13 @@ class _WeatherPageState extends State<WeatherPage> {
                                         height: 4,
                                       ),
                                       RowWidget(
-                                        "Repr: ",
+                                        "Pressure: ",
                                         model.altimeterRepr,
                                         isEnabledSpacer: true,
                                       ),
                                       RowWidget(
                                         "Value: ",
-                                        model.altimeterValue,
+                                        model.altimeterValue + " hPa",
                                         isEnabledSpacer: true,
                                       ),
                                       SizedBox(
@@ -342,6 +346,31 @@ class _WeatherPageState extends State<WeatherPage> {
                     ))));
       }),
     );
+  }
+
+  Card buildMessageAboutCriricalChanging(WeatherState state) {
+    return state.weatherModel
+                                            .isWeatherWasCriticalChanged
+                                        ? Card(
+                                            child: Container(
+                                                margin: EdgeInsets.all(8),
+                                                child: Text(
+                                                  "The weather has changed "
+                                                  "significantly "
+                                                  "recently",
+                                                  style: h14Black,
+                                                )),
+                                          )
+                                        : Card(
+                                            child: Container(
+                                              margin: EdgeInsets.all(8),
+                                              child: Text(
+                                                "The weather has not changed "
+                                                "significantly lately",
+                                                style: h14Black,
+                                              ),
+                                            ),
+                                          );
   }
 
   StatelessWidget buildCloudyPart(WeatherState state) {

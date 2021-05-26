@@ -25,6 +25,8 @@ class WeatherModel {
 
   final List<CloudModel> clouds;
 
+  bool isWeatherWasCriticalChanged;
+
   WeatherModel({
     this.windGust,
     this.metaTimestamp,
@@ -40,6 +42,7 @@ class WeatherModel {
     this.altimeterValue,
     this.visibilityValue,
     this.visibilitySpoken,
+    this.isWeatherWasCriticalChanged,
     this.clouds,
     this.altimeterRepr,
     this.visibilityRepr,
