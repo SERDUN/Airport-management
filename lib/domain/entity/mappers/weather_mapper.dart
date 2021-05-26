@@ -20,10 +20,10 @@ class WeatherMapper extends Mapper<WeatherDto, WeatherModel> {
         .toList();
 
     return WeatherModel(
-        lastFetch: dto.meta.stationsUpdated,
+        metaLastStationUpdate: dto.meta.stationsUpdated,
         altimeterValue: dto.altimeter.value.toString(),
         flightsRule: dto.flightRules,
-        timestamp: dto.meta.timestamp,
+        metaTimestamp: dto.meta.timestamp,
         altimeterRepr: dto.altimeter.repr,
         visibilitySpoken: dto.visibility.spoken,
         visibilityValue: dto.visibility.value.toString(),

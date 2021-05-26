@@ -6,6 +6,7 @@ import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class WeatherPage extends StatefulWidget {
   @override
@@ -13,9 +14,10 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  TextEditingController _controller = TextEditingController();
   WeatherBloc _bloc;
   var dialogDelegate = DialogDelegate();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -61,263 +63,274 @@ class _WeatherPageState extends State<WeatherPage> {
                 )
               ],
             ),
-            body: SingleChildScrollView(
-              child: SafeArea(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                      margin: EdgeInsets.all(16),
-                      child: Stack(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                child: Text(
-                                  "Airport code: ${state.airportModel.code}",
-                                  style: h20BlackStyle,
-                                ),
-                              ),
-                              Divider(
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Metadata",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Station",
-                                model.station,
-                                isEnabledSpacer: true,
-                              ),
-                              RowWidget(
-                                "Timestamp",
-                                model.timestamp,
-                                isEnabledSpacer: true,
-                              ),
-                              RowWidget(
-                                "Last station update: ",
-                                model.lastFetch,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Altimeter: ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Repr: ",
-                                model.altimeterRepr,
-                                isEnabledSpacer: true,
-                              ),
-                              RowWidget(
-                                "Value: ",
-                                model.altimeterValue,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Clouds",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              buildCloudyPart(state),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Raw: ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                model.raw,
-                                style: h14Black,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Sanitized: ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                model.sanitized,
-                                style: h14Black,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Common: ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Remark",
-                                model.remark,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Flights rule",
-                                model.flightsRule,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Temperature",
-                                model.tmp,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Visibility: ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Repr: ",
-                                model.visibilityRepr,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Value: ",
-                                model.visibilityValue,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Spoken: ",
-                                model.visibilitySpoken,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Wind ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Direction: ",
-                                model.windGust,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Gust: ",
-                                model.windDirection,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Speed: ",
-                                model.windSpeed,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "Time ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Repr: ",
-                                model.timeRept,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "dt: ",
-                                model.timeDt,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                "dewpoint ",
-                                style: h16Black,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "Repr: ",
-                                model.dewpointRepr,
-                                isEnabledSpacer: true,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RowWidget(
-                                "value: ",
-                                model.dewpointValue,
-                                isEnabledSpacer: true,
-                              ),
-                            ],
-                          ),
-                          (state is WeatherProgress)
-                              ? BaseIndicator()
-                              : SizedBox()
-                        ],
-                      )),
-                ),
-              ),
-            ));
+            body: Theme(
+                data: Theme.of(context).copyWith(primaryColor: Colors.black),
+                child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: false,
+                    controller: _refreshController,
+                    onRefresh: _onRefresh,
+                    child: SingleChildScrollView(
+                      child: SafeArea(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16),
+                          child: Container(
+                              margin: EdgeInsets.all(16),
+                              child: Stack(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          "Airport code: ${state.airportModel.code}",
+                                          style: h20BlackStyle,
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.grey.withOpacity(0.5),
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Station time update ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Last update: ",
+                                        model.timeDt,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Repr: ",
+                                        model.timeRept,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Altimeter: ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Repr: ",
+                                        model.altimeterRepr,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      RowWidget(
+                                        "Value: ",
+                                        model.altimeterValue,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Clouds",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      buildCloudyPart(state),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Raw: ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Text(
+                                        model.raw,
+                                        style: h14Black,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Sanitized: ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Text(
+                                        model.sanitized,
+                                        style: h14Black,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Common: ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Remark",
+                                        model.remark,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Flights rule",
+                                        model.flightsRule,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Temperature",
+                                        model.tmp,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Visibility: ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Repr: ",
+                                        model.visibilityRepr,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Value: ",
+                                        model.visibilityValue,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Spoken: ",
+                                        model.visibilitySpoken,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Wind ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Direction: ",
+                                        model.windGust,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Gust: ",
+                                        model.windDirection,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Speed: ",
+                                        model.windSpeed,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "dewpoint ",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Repr: ",
+                                        model.dewpointRepr,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "value: ",
+                                        model.dewpointValue,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Metadata",
+                                        style: h16Black,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      RowWidget(
+                                        "Station",
+                                        model.station,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      RowWidget(
+                                        "Timestamp",
+                                        model.metaTimestamp,
+                                        isEnabledSpacer: true,
+                                      ),
+                                      RowWidget(
+                                        "Last station update: ",
+                                        model.metaLastStationUpdate,
+                                        isEnabledSpacer: true,
+                                      ),
+                                    ],
+                                  ),
+                                  (state is WeatherProgress)
+                                      ? BaseIndicator()
+                                      : SizedBox()
+                                ],
+                              )),
+                        ),
+                      ),
+                    ))));
       }),
     );
   }
@@ -421,5 +434,12 @@ class _WeatherPageState extends State<WeatherPage> {
           )
         ],
         borderRadius: new BorderRadius.all(Radius.circular(8)));
+  }
+
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
   }
 }
