@@ -11,8 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import 'argument/weather_airports_arg.dart';
-import 'di/dI_Injector.dart';
+import 'presenter/argument/weather_airports_arg.dart';
+import 'presenter/di/dI_Injector.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
