@@ -3,7 +3,7 @@ import 'package:Aevius/presenter/pages/main_routes.dart';
 import 'package:Aevius/presenter/pages/root/airports/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/bookmarks/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/root/root_navigation_page.dart';
-import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
+import 'package:Aevius/presenter/pages/root/settings/bloc/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'package:Aevius/presenter/pages/root/settings/setting_page.dart';
-import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
+import 'package:Aevius/presenter/pages/root/settings/bloc/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -47,10 +47,10 @@ class _RootPageState extends State<RootPage>
               child: widget.bookmark,
               offstage: _selectedIndex != 1,
             ),
-            // Offstage(
-            //   child: widget.settings,
-            //   offstage: _selectedIndex != 2,
-            // )
+            Offstage(
+              child: widget.settings,
+              offstage: _selectedIndex != 2,
+            )
           ],
         ),
       ),
@@ -64,10 +64,10 @@ class _RootPageState extends State<RootPage>
             icon: Icon(Icons.bookmark),
             label: 'Bookmarks',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.settings),
-          //   label: 'Settings',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue.withOpacity(0.9),

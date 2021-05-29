@@ -33,7 +33,7 @@ import 'package:Aevius/presenter/pages/root/airports/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/bookmarks/bloc/saved_bloc.dart';
 import 'package:Aevius/presenter/pages/root/bookmarks/bookmark_page.dart';
 import 'package:Aevius/presenter/pages/root/settings/setting_page.dart';
-import 'package:Aevius/presenter/pages/root/settings/settings_bloc.dart';
+import 'package:Aevius/presenter/pages/root/settings/bloc/settings_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:Aevius/presenter/pages/splash/splash_page.dart';
 import 'package:Aevius/presenter/pages/weather/bloc/weather_bloc.dart';
