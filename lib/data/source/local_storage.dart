@@ -7,6 +7,7 @@ class LocalStorage {
   final SharedPreferences sharedPreferences;
 
   static const String airportsKey = "airportsKey";
+  static const String airportsSearchRadius = "airportsSearchRadius";
 
   LocalStorage(this.sharedPreferences);
 
@@ -29,6 +30,16 @@ class LocalStorage {
     } else {
       return sharedPreferences.setString(airportsKey, jsonEncode([airport]));
     }
+  }
+
+  Future<bool> saveSearchAirportRadius(int radius) {
+    return sharedPreferences.setInt(airportsSearchRadius, radius);
+  }
+
+  int getSearchAirportRadius() {
+    return sharedPreferences.containsKey(airportsSearchRadius)
+        ? sharedPreferences.getInt(airportsSearchRadius)
+        : 50;
   }
 
   Future<List<AirportDTO>> deleteAirportFromBookmark(AirportDTO airport) async {

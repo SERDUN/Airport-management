@@ -1,3 +1,4 @@
+import 'package:Aevius/presenter/common/dialogs/dialog_delegate.dart';
 import 'package:Aevius/presenter/common/style/thema.dart';
 import 'package:Aevius/presenter/pages/root/settings/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,17 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  int valueHolder = 20;
+  int _valueHolder = 0;
   SettingsBloc _bloc;
+  var dialogDelegate = DialogDelegate();
+
+  @override
+  void initState() {
+    _bloc = BlocProvider.of<SettingsBloc>(context);
+    _bloc.add(GetCurrentRadiusEvent());
+    _valueHolder=_bloc.state.currentRadius;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +43,18 @@ class _SettingPageState extends State<SettingPage> {
                 Container(
                     child: Expanded(
                   child: Slider(
-                      value: valueHolder.toDouble(),
+                      value:_valueHolder.toDouble(),
                       min: 1,
-                      max: 100,
+                      max: 100000,
                       divisions: 100,
                       activeColor: Colors.blue,
                       inactiveColor: Colors.grey,
-                      label: '${valueHolder.round()}',
+                      label: '${_valueHolder.round()}',
                       onChanged: (double newValue) {
                         setState(() {
-                          valueHolder = newValue.round();
+                          _valueHolder = newValue.round();
+                          _bloc.add(UpdateCurrentRadiusEvent( _valueHolder));
+
                         });
                       },
                       semanticFormatterCallback: (double newValue) {
@@ -52,7 +64,7 @@ class _SettingPageState extends State<SettingPage> {
                 Container(
                     margin: EdgeInsets.only(right: 16),
                     child: Text(
-                      '$valueHolder',
+                      '$_valueHolder',
                       style: TextStyle(fontSize: 22),
                     )),
               ]),

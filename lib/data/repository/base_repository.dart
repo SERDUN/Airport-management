@@ -26,9 +26,9 @@ class BaseRepositoryImpl extends BaseRepository {
 
   @override
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
-      double lat, double lng) async {
+      double lat, double lng,int radius) async {
     Response response = await restClientAirPorts.get(
-      "/nearby?lat=$lat&lng=$lng&distance=1000&limit=10",
+      "/nearby?lat=$lat&lng=$lng&distance=$radius&limit=10",
     );
     if (response.statusCode < 300) {
       try {
@@ -76,7 +76,7 @@ class BaseRepositoryImpl extends BaseRepository {
         return Future.value(Right(airportDTO));
       }
       {
-        return Future.value(Left(ErrorMessage("Airport did not save because")));
+        return Future.value(Left(ErrorMessage("Airport did not save")));
       }
     } catch (e) {
       return Future.value(
@@ -90,7 +90,7 @@ class BaseRepositoryImpl extends BaseRepository {
       return Future.value(Right(localStorage.getSavedAirports()));
     } catch (e) {
       return Future.value(
-          Left(ErrorMessage("Airport did not save because $e")));
+          Left(ErrorMessage("Airport did not get  because $e")));
     }
   }
 
@@ -102,7 +102,7 @@ class BaseRepositoryImpl extends BaseRepository {
       return Future.value(Right(result));
     } catch (e) {
       return Future.value(
-          Left(ErrorMessage("Airport did not save because $e")));
+          Left(ErrorMessage("Airport did not delete because $e")));
     }
   }
 

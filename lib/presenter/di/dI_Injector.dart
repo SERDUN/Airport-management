@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Aevius/config/env.dart';
 import 'package:Aevius/data/repository/base_repository.dart';
 import 'package:Aevius/data/repository/location_repository.dart';
+import 'package:Aevius/data/repository/setting_repository.dart';
 import 'package:Aevius/data/source/local_storage.dart';
 import 'package:Aevius/data/source/rest_client.dart';
 import 'package:Aevius/domain/common/mapper_contract.dart';
@@ -16,6 +17,7 @@ import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
+import 'package:Aevius/domain/repository/settings_repository.dart';
 import 'package:Aevius/domain/usecases/airport/GetAirportByCodeUseCase.dart';
 import 'package:Aevius/domain/usecases/airport/GetAirportByCodeUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCase.dart';
@@ -26,6 +28,10 @@ import 'package:Aevius/domain/usecases/bookmarks/GetAirportsFromBookmarkUseCaseI
 import 'package:Aevius/domain/usecases/bookmarks/GetAirportsFromBookmarksUseCase.dart';
 import 'package:Aevius/domain/usecases/airport/GetNearbyAirportsUseCase.dart';
 import 'package:Aevius/domain/usecases/airport/GetNearbyAirportsUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/settings/GetRadiusForAirportsUseCase.dart';
+import 'package:Aevius/domain/usecases/settings/GetRadiusForAirportsUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/settings/UpdateRadiusForAirportsUseCase.dart';
+import 'package:Aevius/domain/usecases/settings/UpdateRadiusForAirportsUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/weather/GetWeatherUseCase.dart';
 import 'package:Aevius/domain/usecases/weather/GetWeatherUseCaseImpl.dart';
 import 'package:Aevius/presenter/pages/root/airports/airports_page.dart';
@@ -80,19 +86,25 @@ class DiInjector {
     var sharedPreferences = await SharedPreferences.getInstance();
     RestClient restClientAirPorts = RestClient(base_url[URLS.NEARBY_AIRPORTS]);
     RestClient restClientWeather = RestClient(base_url[URLS.WEATHER]);
-    RestClient restClientAirportDetails = RestClient(base_url[URLS.DETAILS_AIRPORT]);
+    RestClient restClientAirportDetails =
+        RestClient(base_url[URLS.DETAILS_AIRPORT]);
 
     restClientAirPorts.dio.interceptors.add(PrettyDioLogger());
-    restClientAirPorts.dio.interceptors.add(DioCacheInterceptor(options: options));
-    restClientAirPorts.dio.options.queryParameters["key"]=aviationKey;
+    restClientAirPorts.dio.interceptors
+        .add(DioCacheInterceptor(options: options));
+    restClientAirPorts.dio.options.queryParameters["key"] = aviationKey;
 
     restClientWeather.dio.interceptors.add(PrettyDioLogger());
-    restClientWeather.dio.options.headers["Authorization"] = "BEARER  $weatherKey";
+    restClientWeather.dio.options.headers["Authorization"] =
+        "BEARER  $weatherKey";
 
-    restClientAirportDetails.dio.interceptors.add(DioCacheInterceptor(options: options));
+    restClientAirportDetails.dio.interceptors
+        .add(DioCacheInterceptor(options: options));
     restClientAirportDetails.dio.interceptors.add(PrettyDioLogger());
-    restClientAirportDetails.dio.options.headers['APC-Auth'] = airportDetailsKey;
-    restClientAirportDetails.dio.options.headers['APC-Auth-Secret'] = airportDetailsSecret;
+    restClientAirportDetails.dio.options.headers['APC-Auth'] =
+        airportDetailsKey;
+    restClientAirportDetails.dio.options.headers['APC-Auth-Secret'] =
+        airportDetailsSecret;
 
     GetIt.I.registerSingleton<LocalStorage>(LocalStorage(sharedPreferences));
 
@@ -101,26 +113,35 @@ class DiInjector {
     GetIt.I.registerLazySingleton<LocationRepository>(
         () => LocationRepositoryImpl());
     GetIt.I.registerLazySingleton<BaseRepository>(
-      () => BaseRepositoryImpl(
-          restClientAirPorts,
-          restClientWeather,
-          GetIt.I.get<LocalStorage>(),
-          restClientAirportDetails),
+      () => BaseRepositoryImpl(restClientAirPorts, restClientWeather,
+          GetIt.I.get<LocalStorage>(), restClientAirportDetails),
+    );
+
+    GetIt.I.registerLazySingleton<SettingRepository>(
+      () => SettingRepositoryImpl(GetIt.I.get<LocalStorage>()),
     );
 
     return Future.value();
   }
 
   static Future initUseCase() async {
-    GetIt.I.registerFactory<GetNearbyAirportsUseCase>(() =>
-        GetNearbyAirportsUseCaseImpl(
-            GetIt.I.get<BaseRepository>(),
-            GetIt.I.get<LocationRepository>(),
-            GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
+    GetIt.I.registerFactory<GetNearbyAirportsUseCase>(
+        () => GetNearbyAirportsUseCaseImpl(
+              GetIt.I.get<BaseRepository>(),
+              GetIt.I.get<LocationRepository>(),
+              GetIt.I.get<Mapper<AirportDTO, AirportModel>>(),
+              GetIt.I.get<SettingRepository>(),
+            ));
 
     GetIt.I.registerFactory<GetAirportByCodeUseCase>(() =>
         GetAirportByCodeUseCaseImpl(GetIt.I.get<BaseRepository>(),
             GetIt.I.get<Mapper<AirportDetailsDTO, AirportModel>>()));
+
+    GetIt.I.registerFactory<UpdateRadiusForAirportsUseCase>(() =>
+        UpdateRadiusForAirportsUseCaseImpl(GetIt.I.get<SettingRepository>()));
+
+    GetIt.I.registerFactory<GetRadiusForAirportsUseCase>(() =>
+        GetRadiusForAirportsUseCaseImpl(GetIt.I.get<SettingRepository>()));
 
     GetIt.I.registerFactory<GetWeatherUseCase>(() => GeWeatherUseCaseImpl(
         GetIt.I.get<BaseRepository>(),
@@ -161,7 +182,9 @@ class DiInjector {
         ));
 
     GetIt.I.registerFactory<BlocProvider<SettingsBloc>>(() => BlocProvider(
-          create: (BuildContext context) => SettingsBloc(),
+          create: (BuildContext context) => SettingsBloc(
+              GetIt.I.get<UpdateRadiusForAirportsUseCase>(),
+              GetIt.I.get<GetRadiusForAirportsUseCase>()),
           child: SettingPage(),
         ));
 
@@ -175,10 +198,10 @@ class DiInjector {
             BlocProvider<WeatherBloc>, WeatherModel, AirportModel>(
         (model, airportModel) => BlocProvider(
               create: (BuildContext context) => WeatherBloc(
-                  model,
-                  GetIt.I.get<AddAirportToBookmarkUseCase>(),
-                  airportModel,
-                ),
+                model,
+                GetIt.I.get<AddAirportToBookmarkUseCase>(),
+                airportModel,
+              ),
               child: WeatherPage(),
             ));
 
