@@ -4,6 +4,7 @@ import 'package:Aevius/domain/entity/dto/weather_dto.dart';
 import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/cloud_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
+import 'package:intl/intl.dart';
 
 class WeatherMapper extends Mapper<WeatherDto, WeatherModel> {
   @override
@@ -19,19 +20,26 @@ class WeatherMapper extends Mapper<WeatherDto, WeatherModel> {
             e.modifier.toString(), e.direction.toString()))
         .toList();
 
+    DateTime dateFromServer =
+        new DateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'").parse(dto.time.dt);
+    String dateForUi = DateFormat("yyyy/MM/dd hh:mm:ss").format(dateFromServer);
+
+    var isWeatherCriticalChanged = !dto.raw.contains("NOSIG");
+
     return WeatherModel(
-        lastFetch: dto.meta.stationsUpdated,
+        metaLastStationUpdate: dto.meta.stationsUpdated,
         altimeterValue: dto.altimeter.value.toString(),
         flightsRule: dto.flightRules,
-        timestamp: dto.meta.timestamp,
+        metaTimestamp: dto.meta.timestamp,
         altimeterRepr: dto.altimeter.repr,
         visibilitySpoken: dto.visibility.spoken,
         visibilityValue: dto.visibility.value.toString(),
         visibilityRepr: dto.visibility.repr.toString(),
         station: dto.station,
-        timeDt: dto.time.dt,
+        timeDt: dateForUi,
         timeRept: dto.time.repr,
         raw: dto.raw,
+        isWeatherWasCriticalChanged: isWeatherCriticalChanged,
         sanitized: dto.sanitized,
         dewpointRepr: dto.dewpoint.repr.toString(),
         dewpointValue: dto.dewpoint.value.toString(),
