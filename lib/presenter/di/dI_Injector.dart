@@ -178,7 +178,7 @@ class DiInjector {
                   model,
                   GetIt.I.get<AddAirportToBookmarkUseCase>(),
                   airportModel,
-                ),
+                  GetIt.I.get<GetWeatherUseCase>()),
               child: WeatherPage(),
             ));
 

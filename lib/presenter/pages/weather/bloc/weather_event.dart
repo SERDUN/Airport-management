@@ -7,3 +7,8 @@ abstract class WeatherEvent {
 class AddAirportTooBookmarkEvent extends WeatherEvent {
   const AddAirportTooBookmarkEvent();
 }
+
+
+class FetchWeatherEvent implements WeatherEvent {
+  FetchWeatherEvent();
+}

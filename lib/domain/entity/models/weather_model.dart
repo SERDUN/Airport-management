@@ -1,8 +1,8 @@
 import 'package:Aevius/domain/entity/models/cloud_model.dart';
 
 class WeatherModel {
-  final String lastFetch;
-  final String timestamp;
+  final String metaLastStationUpdate;
+  final String metaTimestamp;
   final String altimeterValue;
   final String altimeterRepr;
   final String flightsRule;
@@ -14,10 +14,10 @@ class WeatherModel {
   final String windGust;
   final String tmp;
   final String station;
-  final String timeRept;
   final String raw;
   final String sanitized;
   final String timeDt;
+  final String timeRept;
   final String remark;
 
   final String dewpointRepr;
@@ -25,21 +25,24 @@ class WeatherModel {
 
   final List<CloudModel> clouds;
 
+  bool isWeatherWasCriticalChanged;
+
   WeatherModel({
     this.windGust,
-    this.timestamp,
+    this.metaTimestamp,
     this.station,
     this.dewpointRepr,
     this.dewpointValue,
     this.raw,
     this.sanitized,
-    this.lastFetch,
+    this.metaLastStationUpdate,
     this.timeDt,
     this.timeRept,
     this.remark,
     this.altimeterValue,
     this.visibilityValue,
     this.visibilitySpoken,
+    this.isWeatherWasCriticalChanged,
     this.clouds,
     this.altimeterRepr,
     this.visibilityRepr,
