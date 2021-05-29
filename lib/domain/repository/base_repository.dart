@@ -1,3 +1,4 @@
+import 'package:Aevius/domain/entity/dto/airoport_details/airport_details_d_t_o.dart';
 import 'package:Aevius/domain/entity/dto/airoport_dto.dart';
 import 'package:Aevius/domain/entity/dto/weather_dto.dart';
 import 'package:Aevius/domain/entity/models/error/either.dart';
@@ -5,6 +6,7 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 
 abstract class BaseRepository {
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(double lat, double lng);
+  Future<Either<Failure, AirportDetailsDTO>> getAirportByCode(String code);
 
   Future<Either<Failure, List<AirportDTO>>> deleteAirportFromBookmark(AirportDTO
   airportDTO);
