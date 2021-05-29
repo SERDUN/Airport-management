@@ -6,24 +6,28 @@ import 'package:Aevius/data/repository/location_repository.dart';
 import 'package:Aevius/data/source/local_storage.dart';
 import 'package:Aevius/data/source/rest_client.dart';
 import 'package:Aevius/domain/common/mapper_contract.dart';
+import 'package:Aevius/domain/entity/dto/airoport_details/airport_details_dto.dart';
 import 'package:Aevius/domain/entity/dto/airoport_dto.dart';
 import 'package:Aevius/domain/entity/dto/weather_dto.dart';
+import 'package:Aevius/domain/entity/mappers/airport_details_mapper.dart';
 import 'package:Aevius/domain/entity/mappers/airport_mapper.dart';
 import 'package:Aevius/domain/entity/mappers/weather_mapper.dart';
 import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
-import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCase.dart';
-import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCaseImpl.dart';
-import 'package:Aevius/domain/usecases/DeleteAirportFromBookmarkUseCase.dart';
-import 'package:Aevius/domain/usecases/DeleteAirportFromBookmarkUseCaseImpl.dart';
-import 'package:Aevius/domain/usecases/GetAirportsFromBookmarkUseCaseImpl.dart';
-import 'package:Aevius/domain/usecases/GetAirportsFromBookmarksUseCase.dart';
-import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
-import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCaseImpl.dart';
-import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
-import 'package:Aevius/domain/usecases/GetWeatherUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/airport/GetAirportByCodeUseCase.dart';
+import 'package:Aevius/domain/usecases/airport/GetAirportByCodeUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/bookmarks/DeleteAirportFromBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/bookmarks/DeleteAirportFromBookmarkUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/bookmarks/GetAirportsFromBookmarkUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/bookmarks/GetAirportsFromBookmarksUseCase.dart';
+import 'package:Aevius/domain/usecases/airport/GetNearbyAirportsUseCase.dart';
+import 'package:Aevius/domain/usecases/airport/GetNearbyAirportsUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/weather/GetWeatherUseCase.dart';
+import 'package:Aevius/domain/usecases/weather/GetWeatherUseCaseImpl.dart';
 import 'package:Aevius/presenter/pages/root/airports/airports_page.dart';
 import 'package:Aevius/presenter/pages/root/airports/bloc/airports_bloc.dart';
 import 'package:Aevius/presenter/pages/root/bookmarks/bloc/saved_bloc.dart';
@@ -51,6 +55,8 @@ class DiInjector {
   }
 
   static Future initMappers() async {
+    GetIt.I.registerFactory<Mapper<AirportDetailsDTO, AirportModel>>(
+        () => AirportDetailsMapper());
     GetIt.I.registerFactory<Mapper<AirportDTO, AirportModel>>(
         () => AirportMapper());
     GetIt.I.registerFactory<Mapper<WeatherDto, WeatherModel>>(
@@ -72,13 +78,23 @@ class DiInjector {
     );
 
     var sharedPreferences = await SharedPreferences.getInstance();
-    RestClient restClientAirPorts =
-        RestClient("http://aviation-edge.com/v2/public");
-    RestClient restClientWeather = RestClient("https://avwx.rest/api");
+    RestClient restClientAirPorts = RestClient(base_url[URLS.NEARBY_AIRPORTS]);
+    RestClient restClientWeather = RestClient(base_url[URLS.WEATHER]);
+    RestClient restClientAirportDetails =
+        RestClient(base_url[URLS.DETAILS_AIRPORT]);
+
     restClientAirPorts.dio.interceptors.add(PrettyDioLogger());
     restClientAirPorts.dio.interceptors
         .add(DioCacheInterceptor(options: options));
+    restClientAirportDetails.dio.interceptors
+        .add(DioCacheInterceptor(options: options));
+
     restClientWeather.dio.interceptors.add(PrettyDioLogger());
+    restClientAirportDetails.dio.interceptors.add(PrettyDioLogger());
+
+    restClientAirportDetails.dio.interceptors.add(PrettyDioLogger());
+    restClientAirportDetails.dio.options.headers['APC-Auth'] = airportDetailsKey;
+    restClientAirportDetails.dio.options.headers['APC-Auth-Secret'] = airportDetailsSecret;
 
     GetIt.I.registerSingleton<LocalStorage>(LocalStorage(sharedPreferences));
 
@@ -87,8 +103,13 @@ class DiInjector {
     GetIt.I.registerLazySingleton<LocationRepository>(
         () => LocationRepositoryImpl());
     GetIt.I.registerLazySingleton<BaseRepository>(
-      () => BaseRepositoryImpl(aviationKey, weatherKey, restClientAirPorts,
-          restClientWeather, GetIt.I.get<LocalStorage>()),
+      () => BaseRepositoryImpl(
+          aviationKey,
+          weatherKey,
+          restClientAirPorts,
+          restClientWeather,
+          GetIt.I.get<LocalStorage>(),
+          restClientAirportDetails),
     );
 
     return Future.value();
@@ -100,6 +121,10 @@ class DiInjector {
             GetIt.I.get<BaseRepository>(),
             GetIt.I.get<LocationRepository>(),
             GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
+
+    GetIt.I.registerFactory<GetAirportByCodeUseCase>(() =>
+        GetAirportByCodeUseCaseImpl(GetIt.I.get<BaseRepository>(),
+            GetIt.I.get<Mapper<AirportDetailsDTO, AirportModel>>()));
 
     GetIt.I.registerFactory<GetWeatherUseCase>(() => GeWeatherUseCaseImpl(
         GetIt.I.get<BaseRepository>(),
@@ -116,7 +141,8 @@ class DiInjector {
         AddAirportToBookmarkUseCaseImp(
             GetIt.I.get<BaseRepository>(),
             GetIt.I.get<LocationRepository>(),
-            GetIt.I.get<Mapper<AirportDTO, AirportModel>>()));
+            GetIt.I.get<Mapper<AirportDTO, AirportModel>>(),
+            GetIt.I.get<Mapper<AirportDetailsDTO, AirportModel>>()));
 
     GetIt.I.registerFactory<DeleteAirportFromBookmarkUseCase>(() =>
         DeleteAirportFromBookmarkUseCaseImp(
@@ -152,8 +178,11 @@ class DiInjector {
     GetIt.I.registerFactoryParam<
             BlocProvider<WeatherBloc>, WeatherModel, AirportModel>(
         (model, airportModel) => BlocProvider(
-              create: (BuildContext context) => WeatherBloc(model,
-                  GetIt.I.get<AddAirportToBookmarkUseCase>(), airportModel),
+              create: (BuildContext context) => WeatherBloc(
+                  model,
+                  GetIt.I.get<AddAirportToBookmarkUseCase>(),
+                  airportModel,
+                ),
               child: WeatherPage(),
             ));
 

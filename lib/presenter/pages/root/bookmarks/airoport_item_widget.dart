@@ -34,7 +34,7 @@ class AirportItemWidget extends StatelessWidget {
                     height: 16,
                   ),
                   buildRow("Airport code: : ", airportModel.code),
-                  buildRow("Distance: ", airportModel.distance.toString()),
+                  buildRow("Distance: ", airportModel.getDistance()),
                   buildRow("Country: ", airportModel.country),
                   buildRow("Time zone: ", airportModel.timeZone)
                 ],

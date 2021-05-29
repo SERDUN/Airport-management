@@ -7,4 +7,8 @@ class AirportModel {
 
   AirportModel(this.name, this.code,
       {this.timeZone, this.country, this.distance});
+
+  String getDistance(){
+    return distance==null?null:distance.toString();
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:Aevius/data/source/local_storage.dart';
 import 'package:Aevius/data/source/rest_client.dart';
+import 'package:Aevius/domain/entity/dto/airoport_details/airport_details_dto.dart';
 import 'package:Aevius/domain/entity/dto/airoport_dto.dart';
 import 'package:Aevius/domain/entity/dto/airport_error_dto.dart';
 import 'package:Aevius/domain/entity/dto/weather_dto.dart';
@@ -15,6 +16,7 @@ class BaseRepositoryImpl extends BaseRepository {
   final String weatherKey;
   final RestClient restClientAirPorts;
   final RestClient restClientWeather;
+  final RestClient airportDetailsClient;
   final LocalStorage localStorage;
 
   BaseRepositoryImpl(
@@ -23,14 +25,14 @@ class BaseRepositoryImpl extends BaseRepository {
     this.restClientAirPorts,
     this.restClientWeather,
     this.localStorage,
+    this.airportDetailsClient,
   );
 
   @override
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng) async {
     Response response = await restClientAirPorts.get(
-      "/nearby?key=$aviationKey&lat=46.482952&lng=30"
-      ".712481&distance=1000&limit=10",
+      "/nearby?key=$aviationKey&lat=$lat&lng=$lng&distance=1000&limit=10",
     );
     if (response.statusCode < 300) {
       try {
@@ -108,6 +110,28 @@ class BaseRepositoryImpl extends BaseRepository {
     } catch (e) {
       return Future.value(
           Left(ErrorMessage("Airport did not save because $e")));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AirportDetailsDTO>> getAirportByCode(String code) async{
+    Response response = await airportDetailsClient.get("/single?iata=$code",);
+    if (response.statusCode < 300) {
+      try {
+        return Right(AirportDetailsDTO.fromJson(response.data));
+      } catch (e) {
+        try {
+          var failure = AirportErrorDTO.fromJson(response.data);
+          return Future.value(Left(ErrorMessage(failure.error)));
+        } catch (e) {
+          return Future.value(Left(ErrorMessage(e.toString())));
+        }
+      }
+    } else {
+      var serverFailure = ServerFailure(
+          response.statusCode, response.data, response.statusMessage)
+        ..parseError();
+      return Left(serverFailure);
     }
   }
 }

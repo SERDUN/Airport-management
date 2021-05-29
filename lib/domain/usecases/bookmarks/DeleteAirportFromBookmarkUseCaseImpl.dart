@@ -10,25 +10,28 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
-import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
+import 'package:Aevius/domain/usecases/weather/GetWeatherUseCase.dart';
 
-import 'GetNearbyAirportsUseCase.dart';
+import 'AddAirportToBookmarkUseCase.dart';
+import 'DeleteAirportFromBookmarkUseCase.dart';
+import '../airport/GetNearbyAirportsUseCase.dart';
 
-class GeWeatherUseCaseImpl extends GetWeatherUseCase {
+class DeleteAirportFromBookmarkUseCaseImp extends
+DeleteAirportFromBookmarkUseCase {
   final BaseRepository baseRepository;
   final LocationRepository locationRepository;
-  final Mapper<WeatherDto, WeatherModel> mapper;
+  final Mapper<AirportDTO, AirportModel> mapper;
 
-  GeWeatherUseCaseImpl(
+  DeleteAirportFromBookmarkUseCaseImp(
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override
-  Future<Either<Failure, WeatherModel>> getWeather(String airportCode) async {
-    var weatherResult = await baseRepository.getWeatherByCode(airportCode);
-    if (weatherResult.isLeft)
-      return Left(ErrorMessage(weatherResult.left.getMessage()));
-
-    var weatherModel = mapper.mapToModel(weatherResult.right);
-    return Future.value(Right(weatherModel));
+  Future<Either<Failure, List<AirportModel>>> execute(AirportModel airport)
+  async {
+    AirportDTO dto = mapper.mapToDto(airport);
+    var result = await baseRepository.deleteAirportFromBookmark(dto);
+    if (result.isLeft) return Left(ErrorMessage(result.left.getMessage()));
+    var model = result.right.map((e) => mapper.mapToModel(e)).toList();
+    return Future.value(Right(model));
   }
 }

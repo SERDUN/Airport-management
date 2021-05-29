@@ -5,10 +5,10 @@ import 'package:Aevius/domain/entity/models/cloud_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
-import 'package:Aevius/domain/usecases/AddAirportToBookmarkUseCase.dart';
-import 'package:Aevius/domain/usecases/DeleteAirportFromBookmarkUseCase.dart';
-import 'package:Aevius/domain/usecases/GetNearbyAirportsUseCase.dart';
-import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
+import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/bookmarks/DeleteAirportFromBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/airport/GetNearbyAirportsUseCase.dart';
+import 'package:Aevius/domain/usecases/weather/GetWeatherUseCase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
     if (event is LoadWeatherForAirport)
       yield* handleGettingWeather(event.airport);
     if (event is FindWeatherByCodeEvent)
-      yield* handleGettingWeather(AirportModel("Not defined", event.code));
+      yield* handleGettingWeather(AirportModel("", event.code));
     if (event is AddAirportTooBookmarkEvent)
       yield* handleAddingToBookmark(event.airport);
   }

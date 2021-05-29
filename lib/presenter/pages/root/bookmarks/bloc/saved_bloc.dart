@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
-import 'package:Aevius/domain/usecases/DeleteAirportFromBookmarkUseCase.dart';
-import 'package:Aevius/domain/usecases/GetAirportsFromBookmarksUseCase.dart';
-import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
+import 'package:Aevius/domain/usecases/bookmarks/DeleteAirportFromBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/bookmarks/GetAirportsFromBookmarksUseCase.dart';
+import 'package:Aevius/domain/usecases/weather/GetWeatherUseCase.dart';
 import 'package:Aevius/presenter/pages/root/airports/bloc/airports_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

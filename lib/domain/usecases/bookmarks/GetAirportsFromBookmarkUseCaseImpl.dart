@@ -10,26 +10,25 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
-import 'package:Aevius/domain/usecases/GetWeatherUseCase.dart';
+import 'package:Aevius/domain/usecases/weather/GetWeatherUseCase.dart';
 
 import 'AddAirportToBookmarkUseCase.dart';
-import 'GetNearbyAirportsUseCase.dart';
+import 'GetAirportsFromBookmarksUseCase.dart';
+import '../airport/GetNearbyAirportsUseCase.dart';
 
-class AddAirportToBookmarkUseCaseImp extends AddAirportToBookmarkUseCase {
+class GetAirportsFromBookmarkUseCaseImp extends GetAirportsFromBookmarkUseCase {
   final BaseRepository baseRepository;
   final LocationRepository locationRepository;
   final Mapper<AirportDTO, AirportModel> mapper;
 
-  AddAirportToBookmarkUseCaseImp(
+  GetAirportsFromBookmarkUseCaseImp(
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override
-  Future<Either<Failure, AirportModel>> execute(AirportModel airport) async {
-    AirportDTO dto = mapper.mapToDto(airport);
-    var result = await baseRepository.addAirportToBookmark(dto);
+  Future<Either<Failure, List<AirportModel>>> execute() async {
+    var result = await baseRepository.getAirportsFromBookmark();
     if (result.isLeft) return Left(ErrorMessage(result.left.getMessage()));
-
-    var model = mapper.mapToModel(result.right);
+    var model = result.right.map((e) => mapper.mapToModel(e)).toList();
     return Future.value(Right(model));
   }
 }

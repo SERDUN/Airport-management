@@ -14,7 +14,7 @@ class WeatherMapper extends Mapper<WeatherDto, WeatherModel> {
 
   @override
   WeatherModel mapToModel(WeatherDto dto) {
-    var clouds = dto.clouds
+    var clouds =dto.clouds==null?[]: dto.clouds
         .map((e) => CloudModel(e.type, e.altitude.toString(),
             e.modifier.toString(), e.direction.toString()))
         .toList();
