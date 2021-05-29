@@ -11,7 +11,7 @@ part 'settings_state.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
  final UpdateRadiusForAirportsUseCase updateRadiusForAirportsUseCase;
  final GetRadiusForAirportsUseCase getRadiusForAirportsUseCase;
-  SettingsBloc(this.updateRadiusForAirportsUseCase, this.getRadiusForAirportsUseCase) : super(SettingsInitial(50));
+  SettingsBloc(this.updateRadiusForAirportsUseCase, this.getRadiusForAirportsUseCase) : super(SettingsInitial(100));
 
   @override
   Stream<SettingsState> mapEventToState(

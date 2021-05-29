@@ -7,6 +7,7 @@ import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../main_routes.dart';
 import 'bloc/airports_bloc.dart';
@@ -20,6 +21,8 @@ class AirportsPage extends StatefulWidget {
 class _AirportsPageState extends State<AirportsPage> {
   TextEditingController _controller = TextEditingController();
   var dialogDelegate = DialogDelegate();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   AirportsBloc _bloc;
 
@@ -84,19 +87,28 @@ class _AirportsPageState extends State<AirportsPage> {
     return BlocListener<AirportsBloc, AirportsState>(
       listener: (ctx, state) {
         if (state is WeatherLoaded) {
+          _refreshController.refreshCompleted();
           Navigator.pushNamed(context, MainNavigatorRoutes.weather,
               arguments:
                   WeatherAirportArg(state.weatherModel, state.selectedAirport));
         }
 
         if (state is AirportWasAddedToBookmark) {
+          _refreshController.refreshCompleted();
+
           dialogDelegate
               .of(context)
               .initTitle("Airport added to bookmark")
               .showInfoSnakeBar();
         }
 
+        if (state is AirportsLoaded) {
+          _refreshController.refreshCompleted();
+
+        }
         if (state is AirportFailureState) {
+          _refreshController.refreshCompleted();
+
           dialogDelegate
               .of(context)
               .initTitle("Failure")
@@ -109,25 +121,36 @@ class _AirportsPageState extends State<AirportsPage> {
         return Expanded(
             child: Stack(
           children: [
-            ListView.builder(
-              itemCount: state.airports.length,
-              itemBuilder: (context, index) {
-                var airport = state.airports[index];
-                return AirportItemWidget(
-                  airportModel: airport,
-                  callback: (model) {
-                    _bloc.add(LoadWeatherForAirport(airport));
-                  },
-                  addToBookmark: (model) {
-                    _bloc.add(AddAirportTooBookmarkEvent(model));
-                  },
-                );
-              },
-            ),
+            Theme(
+                data: Theme.of(context).copyWith(primaryColor: Colors.black),
+                child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: false,
+                    controller: _refreshController,
+                    onRefresh: _onRefresh,
+                    child: ListView.builder(
+                      itemCount: state.airports.length,
+                      itemBuilder: (context, index) {
+                        var airport = state.airports[index];
+                        return AirportItemWidget(
+                          airportModel: airport,
+                          callback: (model) {
+                            _bloc.add(LoadWeatherForAirport(airport));
+                          },
+                          addToBookmark: (model) {
+                            _bloc.add(AddAirportTooBookmarkEvent(model));
+                          },
+                        );
+                      },
+                    ))),
             (state is AirportsInitial) ? BaseIndicator() : SizedBox()
           ],
         ));
       }),
     );
+  }
+
+  void _onRefresh() async {
+    _bloc.add(LoadNearbyAirports());
   }
 }

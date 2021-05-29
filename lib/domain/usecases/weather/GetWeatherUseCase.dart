@@ -5,5 +5,5 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 
 abstract class GetWeatherUseCase {
-  Future<Either<Failure, WeatherModel>> getWeather(String airportCode);
+  Future<Either<Failure, WeatherModel>> invoke(String airportCode);
 }

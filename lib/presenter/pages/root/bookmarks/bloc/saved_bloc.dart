@@ -35,7 +35,7 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
   }
 
   Stream<SavedState> handleGettingAirports() async* {
-    var airportsResult = await getAirportsFromBookmarkUseCase.execute();
+    var airportsResult = await getAirportsFromBookmarkUseCase.invoke();
     if (airportsResult.isLeft)
       yield AirportFailureState(
           state.airports, airportsResult.left.getMessage());
@@ -47,7 +47,7 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
   }
 
   Stream<SavedState> handleDeletingAirports(AirportModel model) async* {
-    var airportsResult = await deleteAirportFromBookmarkUseCase.execute(model);
+    var airportsResult = await deleteAirportFromBookmarkUseCase.invoke(model);
     if (airportsResult.isLeft)
       yield AirportFailureState(
           state.airports, airportsResult.left.getMessage());
@@ -64,7 +64,7 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
 
   Stream<SavedState> handleGettingWeather(AirportModel model) async* {
     yield SavedInitial(state.airports);
-    var weatherResult = await getWeatherUseCase.getWeather(model.code);
+    var weatherResult = await getWeatherUseCase.invoke(model.code);
 
     if (weatherResult.isLeft)
       yield AirportFailureState(

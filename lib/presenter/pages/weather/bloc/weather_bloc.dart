@@ -33,7 +33,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   }
 
   Stream<WeatherState> handleGettingWeather() async* {
-    var weatherResult = await getWeatherUseCase.getWeather(airportModel.code);
+    var weatherResult = await getWeatherUseCase.invoke(airportModel.code);
 
     if (weatherResult.isLeft)
       yield WeatherFailureState(state.weatherModel, state.airportModel,
@@ -47,7 +47,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       AirportModel airportModel) async* {
     yield WeatherProgress(weatherModel, airportModel);
     var airportsResult =
-        await addAirportToBookmarkUseCase.execute(airportModel);
+        await addAirportToBookmarkUseCase.invoke(airportModel);
 
     if (airportsResult.isLeft)
       yield WeatherFailureState(

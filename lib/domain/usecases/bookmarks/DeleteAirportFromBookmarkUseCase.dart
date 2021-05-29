@@ -5,5 +5,5 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 
 abstract class DeleteAirportFromBookmarkUseCase {
-  Future<Either<Failure, List<AirportModel>>> execute(AirportModel airport);
+  Future<Either<Failure, List<AirportModel>>> invoke(AirportModel airport);
 }

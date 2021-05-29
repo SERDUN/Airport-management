@@ -40,7 +40,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
   }
 
   Stream<AirportsState> handleGettingAirports() async* {
-    var airportsResult = await getNearbyAirportsUseCase.getNearbyAirports();
+    var airportsResult = await getNearbyAirportsUseCase.invoke();
 
     if (airportsResult.isLeft)
       yield AirportFailureState(
@@ -51,7 +51,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
 
   Stream<AirportsState> handleGettingWeather(AirportModel model) async* {
     yield AirportsInitial(state.airports);
-    var weatherResult = await getWeatherUseCase.getWeather(model.code);
+    var weatherResult = await getWeatherUseCase.invoke(model.code);
 
     if (weatherResult.isLeft)
       yield AirportFailureState(
@@ -65,7 +65,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
       AirportModel airportModel) async* {
     yield AirportsInitial(state.airports);
     var airportsResult =
-        await addAirportToBookmarkUseCase.execute(airportModel);
+        await addAirportToBookmarkUseCase.invoke(airportModel);
 
     if (airportsResult.isLeft)
       yield AirportFailureState(

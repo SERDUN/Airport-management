@@ -4,6 +4,6 @@ import 'package:Aevius/domain/entity/models/error/either.dart';
 import 'package:Aevius/domain/entity/models/error/failures.dart';
 
 abstract class GetNearbyAirportsUseCase{
-  Future<Either<Failure, List<AirportModel>>> getNearbyAirports();
+  Future<Either<Failure, List<AirportModel>>> invoke();
 
 }

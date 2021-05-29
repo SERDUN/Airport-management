@@ -19,73 +19,74 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     _bloc = BlocProvider.of<SettingsBloc>(context);
     _bloc.add(GetCurrentRadiusEvent());
-    _valueHolder=_bloc.state.currentRadius;
+    _valueHolder = _bloc.state.currentRadius;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SettingsBloc, SettingsState>(
-        listener: (ctx, state) {},
-        child: BlocBuilder<SettingsBloc, SettingsState>(builder: (ctx, state) {
-          return SafeArea(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  margin: EdgeInsets.all(16),
-                  child: Text(
-                    "Airport search radius",
-                    style: h20BlackStyle,
-                  )),
-              Row(children: [
-                Container(
-                    child: Expanded(
-                  child: Slider(
-                      value:_valueHolder.toDouble(),
-                      min: 1,
-                      max: 100000,
-                      divisions: 100,
-                      activeColor: Colors.blue,
-                      inactiveColor: Colors.grey,
-                      label: '${_valueHolder.round()}',
-                      onChanged: (double newValue) {
-                        setState(() {
-                          _valueHolder = newValue.round();
-                          _bloc.add(UpdateCurrentRadiusEvent( _valueHolder));
-
-                        });
-                      },
-                      semanticFormatterCallback: (double newValue) {
-                        return '${newValue.round()}';
-                      }),
+    return BlocListener<SettingsBloc, SettingsState>(listener: (ctx, state) {
+      if (state is SettingsInitial) {
+        _valueHolder = state.currentRadius;
+      }
+    }, child: BlocBuilder<SettingsBloc, SettingsState>(builder: (ctx, state) {
+      return SafeArea(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+              margin: EdgeInsets.all(16),
+              child: Text(
+                "Airport search radius",
+                style: h20BlackStyle,
+              )),
+          Row(children: [
+            Container(
+                child: Expanded(
+              child: Slider(
+                  value: _valueHolder.toDouble(),
+                  min: 10,
+                  max: 1000,
+                  divisions: 1000,
+                  activeColor: Colors.blue,
+                  inactiveColor: Colors.grey,
+                  label: '${_valueHolder.round()}',
+                  onChanged: (double newValue) {
+                    setState(() {
+                      _valueHolder = newValue.round();
+                      _bloc.add(UpdateCurrentRadiusEvent(_valueHolder));
+                    });
+                  },
+                  semanticFormatterCallback: (double newValue) {
+                    return '${newValue.round()}';
+                  }),
+            )),
+            Container(
+                margin: EdgeInsets.only(right: 16),
+                child: Text(
+                  '$_valueHolder',
+                  style: TextStyle(fontSize: 22),
                 )),
-                Container(
-                    margin: EdgeInsets.only(right: 16),
-                    child: Text(
-                      '$_valueHolder',
-                      style: TextStyle(fontSize: 22),
-                    )),
-              ]),
-              // Container(
-              //     margin: EdgeInsets.only(top: 16,bottom: 24,left: 16,right: 16),
-              //     child: Text(
-              //       "Preferences",
-              //       style: h20BlackStyle,
-              //     )),
-              // Container(
-              //     margin: EdgeInsets.symmetric(horizontal: 24),
-              //     child: Container(
-              //       child: Text("Clear bookmarks"),
-              //     )),
-              // Container(
-              //   margin: EdgeInsets.symmetric(horizontal: 24),
-              //
-              //   child: Divider(color: Colors.black.withOpacity(0.5),),
-              //)
-            ],
-          ));
-        }));
+          ]),
+          // Container(
+          //     margin: EdgeInsets.only(top: 16,bottom: 24,left: 16,right: 16),
+          //     child: Text(
+          //       "Preferences",
+          //       style: h20BlackStyle,
+          //     )),
+          // Container(
+          //     margin: EdgeInsets.symmetric(horizontal: 24),
+          //     child: Container(
+          //       child: Text("Clear bookmarks"),
+          //     )),
+          // Container(
+          //   margin: EdgeInsets.symmetric(horizontal: 24),
+          //
+          //   child: Divider(color: Colors.black.withOpacity(0.5),),
+          //)
+        ],
+      ));
+    }));
   }
 }

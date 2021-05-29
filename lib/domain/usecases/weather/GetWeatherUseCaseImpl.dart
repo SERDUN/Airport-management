@@ -23,7 +23,7 @@ class GeWeatherUseCaseImpl extends GetWeatherUseCase {
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override
-  Future<Either<Failure, WeatherModel>> getWeather(String airportCode) async {
+  Future<Either<Failure, WeatherModel>> invoke(String airportCode) async {
     var weatherResult = await baseRepository.getWeatherByCode(airportCode);
     if (weatherResult.isLeft)
       return Left(ErrorMessage(weatherResult.left.getMessage()));

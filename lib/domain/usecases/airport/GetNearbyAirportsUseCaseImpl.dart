@@ -22,7 +22,7 @@ class GetNearbyAirportsUseCaseImpl extends GetNearbyAirportsUseCase {
       this.mapper, this.settingRepository);
 
   @override
-  Future<Either<Failure, List<AirportModel>>> getNearbyAirports() async {
+  Future<Either<Failure, List<AirportModel>>> invoke() async {
     var locationResult = await locationRepository.getCurrentLocation();
     if (locationResult.isLeft)
       return Left(ErrorMessage(locationResult.left.getMessage()));

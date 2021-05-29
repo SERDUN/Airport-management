@@ -28,7 +28,7 @@ class BaseRepositoryImpl extends BaseRepository {
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng,int radius) async {
     Response response = await restClientAirPorts.get(
-      "/nearby?lat=$lat&lng=$lng&distance=$radius&limit=10",
+      "/nearby?lat=$lat&lng=$lng&limit=10&distance=$radius",
     );
     if (response.statusCode < 300) {
       try {

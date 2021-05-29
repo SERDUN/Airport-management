@@ -26,7 +26,7 @@ DeleteAirportFromBookmarkUseCase {
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override
-  Future<Either<Failure, List<AirportModel>>> execute(AirportModel airport)
+  Future<Either<Failure, List<AirportModel>>> invoke(AirportModel airport)
   async {
     AirportDTO dto = mapper.mapToDto(airport);
     var result = await baseRepository.deleteAirportFromBookmark(dto);

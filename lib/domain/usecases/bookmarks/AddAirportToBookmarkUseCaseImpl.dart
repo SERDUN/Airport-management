@@ -27,7 +27,7 @@ class AddAirportToBookmarkUseCaseImp extends AddAirportToBookmarkUseCase {
       this.mapper, this.mapperDetails);
 
   @override
-  Future<Either<Failure, AirportModel>> execute(AirportModel airport) async {
+  Future<Either<Failure, AirportModel>> invoke(AirportModel airport) async {
     var savingAirport = airport;
 
     if (isNullOrEmpty(airport.name)) {

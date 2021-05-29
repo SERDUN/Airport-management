@@ -25,7 +25,7 @@ class GetAirportsFromBookmarkUseCaseImp extends GetAirportsFromBookmarkUseCase {
       this.baseRepository, this.locationRepository, this.mapper);
 
   @override
-  Future<Either<Failure, List<AirportModel>>> execute() async {
+  Future<Either<Failure, List<AirportModel>>> invoke() async {
     var result = await baseRepository.getAirportsFromBookmark();
     if (result.isLeft) return Left(ErrorMessage(result.left.getMessage()));
     var model = result.right.map((e) => mapper.mapToModel(e)).toList();

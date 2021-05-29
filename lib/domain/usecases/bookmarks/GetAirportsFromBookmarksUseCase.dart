@@ -5,5 +5,5 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 
 abstract class GetAirportsFromBookmarkUseCase {
-  Future<Either<Failure, List<AirportModel>>> execute();
+  Future<Either<Failure, List<AirportModel>>> invoke();
 }
