@@ -80,18 +80,16 @@ class DiInjector {
     var sharedPreferences = await SharedPreferences.getInstance();
     RestClient restClientAirPorts = RestClient(base_url[URLS.NEARBY_AIRPORTS]);
     RestClient restClientWeather = RestClient(base_url[URLS.WEATHER]);
-    RestClient restClientAirportDetails =
-        RestClient(base_url[URLS.DETAILS_AIRPORT]);
+    RestClient restClientAirportDetails = RestClient(base_url[URLS.DETAILS_AIRPORT]);
 
     restClientAirPorts.dio.interceptors.add(PrettyDioLogger());
-    restClientAirPorts.dio.interceptors
-        .add(DioCacheInterceptor(options: options));
-    restClientAirportDetails.dio.interceptors
-        .add(DioCacheInterceptor(options: options));
+    restClientAirPorts.dio.interceptors.add(DioCacheInterceptor(options: options));
+    restClientAirPorts.dio.options.queryParameters["key"]=aviationKey;
 
     restClientWeather.dio.interceptors.add(PrettyDioLogger());
-    restClientAirportDetails.dio.interceptors.add(PrettyDioLogger());
+    restClientWeather.dio.options.headers["Authorization"] = "BEARER  $weatherKey";
 
+    restClientAirportDetails.dio.interceptors.add(DioCacheInterceptor(options: options));
     restClientAirportDetails.dio.interceptors.add(PrettyDioLogger());
     restClientAirportDetails.dio.options.headers['APC-Auth'] = airportDetailsKey;
     restClientAirportDetails.dio.options.headers['APC-Auth-Secret'] = airportDetailsSecret;
@@ -104,8 +102,6 @@ class DiInjector {
         () => LocationRepositoryImpl());
     GetIt.I.registerLazySingleton<BaseRepository>(
       () => BaseRepositoryImpl(
-          aviationKey,
-          weatherKey,
           restClientAirPorts,
           restClientWeather,
           GetIt.I.get<LocalStorage>(),

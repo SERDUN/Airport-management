@@ -12,16 +12,12 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class BaseRepositoryImpl extends BaseRepository {
-  final String aviationKey;
-  final String weatherKey;
   final RestClient restClientAirPorts;
   final RestClient restClientWeather;
   final RestClient airportDetailsClient;
   final LocalStorage localStorage;
 
   BaseRepositoryImpl(
-    this.aviationKey,
-    this.weatherKey,
     this.restClientAirPorts,
     this.restClientWeather,
     this.localStorage,
@@ -32,7 +28,7 @@ class BaseRepositoryImpl extends BaseRepository {
   Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
       double lat, double lng) async {
     Response response = await restClientAirPorts.get(
-      "/nearby?key=$aviationKey&lat=$lat&lng=$lng&distance=1000&limit=10",
+      "/nearby?lat=$lat&lng=$lng&distance=1000&limit=10",
     );
     if (response.statusCode < 300) {
       try {
@@ -55,9 +51,6 @@ class BaseRepositoryImpl extends BaseRepository {
 
   @override
   Future<Either<Failure, WeatherDto>> getWeatherByCode(String code) async {
-    restClientWeather.dio.options.headers["Authorization"] =
-        "BEARER  $weatherKey";
-
     Response response =
         await restClientWeather.get("/metar/$code?airport=true&format=json");
     if (response.statusCode < 300) {
