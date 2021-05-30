@@ -24,8 +24,11 @@ class GetNearbyAirportsUseCaseImpl extends GetNearbyAirportsUseCase {
   @override
   Future<Either<Failure, List<AirportModel>>> invoke() async {
     var locationResult = await locationRepository.getCurrentLocation();
-    if (locationResult.isLeft)
-      return Left(ErrorMessage(locationResult.left.getMessage()));
+    if (locationResult.isLeft) {
+      var error = ErrorMessage(locationResult.left.getMessage());
+      error.failureType = locationResult.left.failureType;
+      return Left(error);
+    }
 
     var radiusResult = await settingRepository.getRadiusForGetNearbyAirport();
     if (radiusResult.isLeft)

@@ -5,9 +5,15 @@ import 'package:Aevius/domain/utils/utils.dart';
 
 abstract class Failure {
   String getMessage();
+
+  FailureType failureType = FailureType.DEFAULT;
 }
 
-//// General failures
+enum FailureType {
+  DEFAULT,
+  LOCATION_DETECT
+}
+
 class ServerFailure extends Failure {
   final int statusCode;
   final dynamic data;
@@ -63,7 +69,7 @@ class ServerFailure extends Failure {
 
   @override
   String getMessage() {
-    print("HttpException: "+_displayFailure);
+    print("HttpException: " + _displayFailure);
     return _displayFailure;
   }
 }

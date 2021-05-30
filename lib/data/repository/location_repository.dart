@@ -8,8 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationRepositoryImpl implements LocationRepository {
-  LocationAccuracy desiredAccuracy = LocationAccuracy.low;
-
 
   @override
   Future<LocationPermissionType> checkLocationPermission() async {
@@ -71,17 +69,15 @@ class LocationRepositoryImpl implements LocationRepository {
   @override
   Future<Either<Failure, LocationModel>> getCurrentLocation() async {
     try {
-      var lastPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: desiredAccuracy, timeLimit: Duration(seconds: 25));
+      var lastPosition = await Geolocator.getLastKnownPosition();
       return Future.value(Right(LocationModel(
           lat: lastPosition.latitude, lng: lastPosition.longitude)));
     } catch (e) {
       Failure message = ErrorMessage(e.toString());
+      message.failureType = FailureType.LOCATION_DETECT;
       return Future.value(Left(message));
     }
   }
-
-
 
   @override
   Future<LocationPermissionType> openSettingsLocationPermission() async {

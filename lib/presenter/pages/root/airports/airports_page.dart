@@ -4,6 +4,7 @@ import 'package:Aevius/presenter/common/style/thema.dart';
 import 'package:Aevius/presenter/common/ui/base_indicator.dart';
 import 'package:Aevius/presenter/pages/root/airports/airoport_item_widget.dart';
 import 'package:Aevius/presenter/pages/splash/bloc/splash_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,14 +72,7 @@ class _AirportsPageState extends State<AirportsPage> {
             ),
           ]),
         ),
-        Container(
-            margin: EdgeInsets.all(16),
-            child: Text(
-              "Nearby "
-              "airports",
-              style: h20BlackStyle,
-            )),
-        buildNearbyAirportsPage()
+        Expanded(child: buildNearbyAirportsPage()),
       ],
     ));
   }
@@ -104,7 +98,6 @@ class _AirportsPageState extends State<AirportsPage> {
 
         if (state is AirportsLoaded) {
           _refreshController.refreshCompleted();
-
         }
         if (state is AirportFailureState) {
           _refreshController.refreshCompleted();
@@ -118,35 +111,74 @@ class _AirportsPageState extends State<AirportsPage> {
         }
       },
       child: BlocBuilder<AirportsBloc, AirportsState>(builder: (ctx, state) {
-        return Expanded(
-            child: Stack(
-          children: [
-            Theme(
-                data: Theme.of(context).copyWith(primaryColor: Colors.black),
-                child: SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: false,
-                    controller: _refreshController,
-                    onRefresh: _onRefresh,
-                    child: ListView.builder(
-                      itemCount: state.airports.length,
-                      itemBuilder: (context, index) {
-                        var airport = state.airports[index];
-                        return AirportItemWidget(
-                          airportModel: airport,
-                          callback: (model) {
-                            _bloc.add(LoadWeatherForAirport(airport));
+        return Container(
+            child: Stack(children: [
+          Column(
+            children: [
+              Row(children: [Container(
+                  margin: EdgeInsets.all(16),
+                  child: Text(
+                    "Nearby "
+                        "airports",
+                    style: h20BlackStyle,
+                  ))],),
+              Expanded(
+                  child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(primaryColor: Colors.black),
+                      child: SmartRefresher(
+                        enablePullDown: true,
+                        enablePullUp: false,
+                        controller: _refreshController,
+                        onRefresh: _onRefresh,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.airports.length,
+                          itemBuilder: (context, index) {
+                            var airport = state.airports[index];
+                            return AirportItemWidget(
+                              airportModel: airport,
+                              callback: (model) {
+                                _bloc.add(LoadWeatherForAirport(airport));
+                              },
+                              addToBookmark: (model) {
+                                _bloc.add(AddAirportTooBookmarkEvent(model));
+                              },
+                            );
                           },
-                          addToBookmark: (model) {
-                            _bloc.add(AddAirportTooBookmarkEvent(model));
-                          },
-                        );
-                      },
-                    ))),
-            (state is AirportsInitial) ? BaseIndicator() : SizedBox()
-          ],
-        ));
+                        ),
+                      ))),
+            ],
+          ),
+              state is AirportsInitial ? BaseIndicator() : SizedBox(),
+              state is LocationNotDetectedFailureState
+                  ? locationNotDetect()
+                  : SizedBox()
+        ]));
       }),
+    );
+  }
+
+  Center locationNotDetect() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Your location not detected ",
+            style: h14Grey,
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          OutlinedButton(
+              onPressed: () {
+                _bloc.add(LoadNearbyAirports());
+              },
+              child: Text("Try again"))
+        ],
+      ),
     );
   }
 

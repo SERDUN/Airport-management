@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:Aevius/domain/entity/models/airport_model.dart';
 import 'package:Aevius/domain/entity/models/cloud_model.dart';
+import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
@@ -40,10 +41,15 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
   }
 
   Stream<AirportsState> handleGettingAirports() async* {
+    if (state.airports.isEmpty) yield AirportsInitial(state.airports);
     var airportsResult = await getNearbyAirportsUseCase.invoke();
 
-    if (airportsResult.isLeft)
+    if (airportsResult.isLeft) if (airportsResult.left.failureType ==
+        FailureType.DEFAULT)
       yield AirportFailureState(
+          state.airports, airportsResult.left.getMessage());
+    else
+      yield LocationNotDetectedFailureState(
           state.airports, airportsResult.left.getMessage());
 
     if (airportsResult.isRight) yield AirportsLoaded(airportsResult.right);
@@ -64,8 +70,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
   Stream<AirportsState> handleAddingToBookmark(
       AirportModel airportModel) async* {
     yield AirportsInitial(state.airports);
-    var airportsResult =
-        await addAirportToBookmarkUseCase.invoke(airportModel);
+    var airportsResult = await addAirportToBookmarkUseCase.invoke(airportModel);
 
     if (airportsResult.isLeft)
       yield AirportFailureState(

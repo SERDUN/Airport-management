@@ -41,6 +41,16 @@ class AirportFailureState extends AirportsState {
   List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch,message];
 }
 
+class LocationNotDetectedFailureState extends AirportsState {
+  final String message;
+
+  LocationNotDetectedFailureState(List<AirportModel> airports, this.message)
+      : super(airports);
+
+  @override
+  List<Object> get props => [airports, DateTime.now().microsecondsSinceEpoch,message];
+}
+
 
 class AirportWasAddedToBookmark extends AirportsState {
   AirportWasAddedToBookmark(List<AirportModel> airports) : super(airports);
