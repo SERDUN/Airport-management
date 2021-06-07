@@ -17,16 +17,14 @@ class BaseRepositoryImpl extends BaseRepository {
   final RestClient airportDetailsClient;
   final LocalStorage localStorage;
 
-  BaseRepositoryImpl(
-    this.restClientAirPorts,
-    this.restClientWeather,
-    this.localStorage,
-    this.airportDetailsClient,
-  );
+  BaseRepositoryImpl(this.restClientAirPorts,
+      this.restClientWeather,
+      this.localStorage,
+      this.airportDetailsClient,);
 
   @override
-  Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(
-      double lat, double lng,int radius) async {
+  Future<Either<Failure, List<AirportDTO>>> getNearbyAirports(double lat,
+      double lng, int radius) async {
     Response response = await restClientAirPorts.get(
       "/nearby?lat=$lat&lng=$lng&limit=10&distance=$radius",
     );
@@ -52,7 +50,7 @@ class BaseRepositoryImpl extends BaseRepository {
   @override
   Future<Either<Failure, WeatherDto>> getWeatherByCode(String code) async {
     Response response =
-        await restClientWeather.get("/metar/$code?airport=true&format=json");
+    await restClientWeather.get("/metar/$code?airport=true&format=json");
     if (response.statusCode < 300) {
       if (response.data == "") {
         return Future.value(
@@ -107,8 +105,11 @@ class BaseRepositoryImpl extends BaseRepository {
   }
 
   @override
-  Future<Either<Failure, AirportDetailsDTO>> getAirportByCode(String code) async{
-    Response response = await airportDetailsClient.get("/single?iata=$code",);
+  Future<Either<Failure, AirportDetailsDTO>> getAirportByCode(
+      String code) async {
+    Response response = await airportDetailsClient.get(
+      "/single?iata=$code",
+    );
     if (response.statusCode < 300) {
       try {
         return Right(AirportDetailsDTO.fromJson(response.data));
@@ -127,4 +128,17 @@ class BaseRepositoryImpl extends BaseRepository {
       return Left(serverFailure);
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> isAirportInBookmark(String code) {
+    try {
+      var airports = localStorage.getSavedAirports();
+      var airport = airports.firstWhere((element) =>
+      element.codeIataAirport == code);
+      return Future.value(Right(airport != null));
+      } catch (e)
+      {
+        return Future.value(Right(false));
+      }
+    }
 }

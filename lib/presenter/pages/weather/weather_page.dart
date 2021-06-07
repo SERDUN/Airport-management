@@ -16,7 +16,8 @@ class WeatherPage extends StatefulWidget {
 class _WeatherPageState extends State<WeatherPage> {
   WeatherBloc _bloc;
   var dialogDelegate = DialogDelegate();
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -36,6 +37,13 @@ class _WeatherPageState extends State<WeatherPage> {
               .showInfoSnakeBar();
         }
 
+        if (state is AirportWasDeletedFromBookmark) {
+          _refreshController.refreshCompleted();
+          dialogDelegate
+              .of(context)
+              .initTitle("Airport deleted from bookmark")
+              .showInfoSnakeBar();
+        }
         if (state is WeatherFailureState) {
           _refreshController.refreshCompleted();
 
@@ -59,17 +67,19 @@ class _WeatherPageState extends State<WeatherPage> {
         return Scaffold(
             appBar: AppBar(
               title: Text('Details'),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.bookmark,
-                    color: background_dark,
-                  ),
-                  onPressed: () {
-                    _bloc.add(AddAirportTooBookmarkEvent());
-                  },
-                )
-              ],
+              actions:
+                   <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.bookmark,
+                          color: state.airportModel
+                              .isInBookmark?Colors.black:Colors.grey,
+                        ),
+                        onPressed: () {
+                          _bloc.add(AddAirportTooBookmarkEvent());
+                        },
+                      )
+                    ],
             ),
             body: Theme(
                 data: Theme.of(context).copyWith(primaryColor: Colors.black),
@@ -348,28 +358,27 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   Card buildMessageAboutCriricalChanging(WeatherState state) {
-    return state.weatherModel
-                                            .isWeatherWasCriticalChanged
-                                        ? Card(
-                                            child: Container(
-                                                margin: EdgeInsets.all(8),
-                                                child: Text(
-                                                  "The weather has changed "
-                                                  "significantly "
-                                                  "recently",
-                                                  style: h14Black,
-                                                )),
-                                          )
-                                        : Card(
-                                            child: Container(
-                                              margin: EdgeInsets.all(8),
-                                              child: Text(
-                                                "The weather has not changed "
-                                                "significantly lately",
-                                                style: h14Black,
-                                              ),
-                                            ),
-                                          );
+    return state.weatherModel.isWeatherWasCriticalChanged
+        ? Card(
+            child: Container(
+                margin: EdgeInsets.all(8),
+                child: Text(
+                  "The weather has changed "
+                  "significantly "
+                  "recently",
+                  style: h14Black,
+                )),
+          )
+        : Card(
+            child: Container(
+              margin: EdgeInsets.all(8),
+              child: Text(
+                "The weather has not changed "
+                "significantly lately",
+                style: h14Black,
+              ),
+            ),
+          );
   }
 
   StatelessWidget buildCloudyPart(WeatherState state) {

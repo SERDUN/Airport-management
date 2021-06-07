@@ -42,6 +42,13 @@ class GetNearbyAirportsUseCaseImpl extends GetNearbyAirportsUseCase {
     var airports =
         airportsResult.right.map((e) => mapper.mapToModel(e)).toList();
 
+    airports.forEach((element) async {
+      var isInBookmarkResult =
+          await baseRepository.isAirportInBookmark(element.code);
+      if (isInBookmarkResult.isRight)
+        element.isInBookmark = isInBookmarkResult.right;
+    });
+
     return Future.value(Right(airports));
   }
 }

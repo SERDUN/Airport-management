@@ -29,6 +29,14 @@ class AirportWasAddedToBookmark extends WeatherState {
   List<Object> get props => [DateTime.now().microsecondsSinceEpoch];
 }
 
+class AirportWasDeletedFromBookmark extends WeatherState {
+  AirportWasDeletedFromBookmark(WeatherModel weatherModel,AirportModel
+  airportModel) : super(weatherModel,airportModel);
+
+  @override
+  List<Object> get props => [DateTime.now().microsecondsSinceEpoch];
+}
+
 class WeatherFailureState extends WeatherState {
   final String message;
 

@@ -201,7 +201,8 @@ class DiInjector {
                   model,
                   GetIt.I.get<AddAirportToBookmarkUseCase>(),
                   airportModel,
-                  GetIt.I.get<GetWeatherUseCase>()),
+                  GetIt.I.get<GetWeatherUseCase>(),
+                  GetIt.I.get<DeleteAirportFromBookmarkUseCase>()),
               child: WeatherPage(),
             ));
 
@@ -209,8 +210,8 @@ class DiInjector {
           create: (BuildContext context) => AirportsBloc(
             GetIt.I.get<GetNearbyAirportsUseCase>(),
             GetIt.I.get<GetWeatherUseCase>(),
-            addAirportToBookmarkUseCase:
-                GetIt.I.get<AddAirportToBookmarkUseCase>(),
+            GetIt.I.get<DeleteAirportFromBookmarkUseCase>(),
+            addAirportToBookmarkUseCase: GetIt.I.get<AddAirportToBookmarkUseCase>(),
           ),
           child: AirportsPage(),
         ));

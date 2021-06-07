@@ -42,7 +42,7 @@ class AirportItemWidget extends StatelessWidget {
               )),
               IconButton(
                 icon: Icon(Icons.bookmark),
-                color: Colors.grey,
+                color: airportModel.isInBookmark ? Colors.black : Colors.grey,
                 onPressed: () => addToBookmark(airportModel),
               )
             ],
@@ -52,6 +52,4 @@ class AirportItemWidget extends StatelessWidget {
       ),
     );
   }
-
-
 }

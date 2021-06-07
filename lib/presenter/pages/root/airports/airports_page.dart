@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../main_routes.dart';
 import 'bloc/airports_bloc.dart';
@@ -24,13 +25,14 @@ class _AirportsPageState extends State<AirportsPage> {
   var dialogDelegate = DialogDelegate();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  Key airportsKey = Key("AIRPORTS");
 
   AirportsBloc _bloc;
 
   @override
   void initState() {
     _bloc = BlocProvider.of<AirportsBloc>(context);
-    _bloc.add(LoadNearbyAirports());
+   // _bloc.add(LoadNearbyAirports());
     super.initState();
   }
 
@@ -78,85 +80,102 @@ class _AirportsPageState extends State<AirportsPage> {
   }
 
   Widget buildNearbyAirportsPage() {
-    return BlocListener<AirportsBloc, AirportsState>(
-      listener: (ctx, state) {
-        if (state is WeatherLoaded) {
-          _refreshController.refreshCompleted();
-          Navigator.pushNamed(context, MainNavigatorRoutes.weather,
-              arguments:
-                  WeatherAirportArg(state.weatherModel, state.selectedAirport));
-        }
+    return VisibilityDetector(
+        key: airportsKey,
+        onVisibilityChanged: (VisibilityInfo info) =>
+            _bloc.add(LoadNearbyAirports(isVisibleLoader: false)),
+        child: BlocListener<AirportsBloc, AirportsState>(
+          listener: (ctx, state) {
+            if (state is WeatherLoaded) {
+              _refreshController.refreshCompleted();
+              Navigator.pushNamed(context, MainNavigatorRoutes.weather,
+                  arguments: WeatherAirportArg(
+                      state.weatherModel, state.selectedAirport));
+            }
 
-        if (state is AirportWasAddedToBookmark) {
-          _refreshController.refreshCompleted();
+            if (state is AirportWasAddedToBookmark) {
+              _refreshController.refreshCompleted();
+              dialogDelegate
+                  .of(context)
+                  .initTitle("Airport added to bookmark")
+                  .showInfoSnakeBar();
+            }
 
-          dialogDelegate
-              .of(context)
-              .initTitle("Airport added to bookmark")
-              .showInfoSnakeBar();
-        }
+            if (state is AirportWasDeletedFromBookmark) {
+              _refreshController.refreshCompleted();
+              dialogDelegate
+                  .of(context)
+                  .initTitle("Airport deleted from bookmark")
+                  .showInfoSnakeBar();
+            }
 
-        if (state is AirportsLoaded) {
-          _refreshController.refreshCompleted();
-        }
-        if (state is AirportFailureState) {
-          _refreshController.refreshCompleted();
+            if (state is AirportsLoaded) {
+              _refreshController.refreshCompleted();
+            }
+            if (state is AirportFailureState) {
+              _refreshController.refreshCompleted();
 
-          dialogDelegate
-              .of(context)
-              .initTitle("Failure")
-              .initDescription(state.message)
-              .initActionTitle1("oK")
-              .showInfoDialog();
-        }
-      },
-      child: BlocBuilder<AirportsBloc, AirportsState>(builder: (ctx, state) {
-        return Container(
-            child: Stack(children: [
-          Column(
-            children: [
-              Row(children: [Container(
-                  margin: EdgeInsets.all(16),
-                  child: Text(
-                    "Nearby "
-                        "airports",
-                    style: h20BlackStyle,
-                  ))],),
-              Expanded(
-                  child: Theme(
-                      data: Theme.of(context)
-                          .copyWith(primaryColor: Colors.black),
-                      child: SmartRefresher(
-                        enablePullDown: true,
-                        enablePullUp: false,
-                        controller: _refreshController,
-                        onRefresh: _onRefresh,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: state.airports.length,
-                          itemBuilder: (context, index) {
-                            var airport = state.airports[index];
-                            return AirportItemWidget(
-                              airportModel: airport,
-                              callback: (model) {
-                                _bloc.add(LoadWeatherForAirport(airport));
+              dialogDelegate
+                  .of(context)
+                  .initTitle("Failure")
+                  .initDescription(state.message)
+                  .initActionTitle1("oK")
+                  .showInfoDialog();
+            }
+          },
+          child:
+              BlocBuilder<AirportsBloc, AirportsState>(builder: (ctx, state) {
+            return Container(
+                child: Stack(children: [
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.all(16),
+                          child: Text(
+                            "Nearby "
+                            "airports",
+                            style: h20BlackStyle,
+                          ))
+                    ],
+                  ),
+                  Expanded(
+                      child: Theme(
+                          data: Theme.of(context)
+                              .copyWith(primaryColor: Colors.black),
+                          child: SmartRefresher(
+                            enablePullDown: true,
+                            enablePullUp: false,
+                            controller: _refreshController,
+                            onRefresh: _onRefresh,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: state.airports.length,
+                              itemBuilder: (context, index) {
+                                var airport = state.airports[index];
+                                return AirportItemWidget(
+                                  airportModel: airport,
+                                  callback: (model) {
+                                    _bloc.add(LoadWeatherForAirport(airport));
+                                  },
+                                  addToBookmark: (model) {
+                                    _bloc
+                                        .add(AddAirportTooBookmarkEvent(model));
+                                  },
+                                );
                               },
-                              addToBookmark: (model) {
-                                _bloc.add(AddAirportTooBookmarkEvent(model));
-                              },
-                            );
-                          },
-                        ),
-                      ))),
-            ],
-          ),
+                            ),
+                          ))),
+                ],
+              ),
               state is AirportsInitial ? BaseIndicator() : SizedBox(),
               state is LocationNotDetectedFailureState
                   ? locationNotDetect()
                   : SizedBox()
-        ]));
-      }),
-    );
+            ]));
+          }),
+        ));
   }
 
   Center locationNotDetect() {

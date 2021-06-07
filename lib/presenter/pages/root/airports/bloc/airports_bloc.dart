@@ -22,8 +22,10 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
   final GetNearbyAirportsUseCase getNearbyAirportsUseCase;
   final GetWeatherUseCase getWeatherUseCase;
   final AddAirportToBookmarkUseCase addAirportToBookmarkUseCase;
+  final DeleteAirportFromBookmarkUseCase deleteAirportToBookmarkUseCase;
 
   AirportsBloc(this.getNearbyAirportsUseCase, this.getWeatherUseCase,
+      this.deleteAirportToBookmarkUseCase,
       {this.addAirportToBookmarkUseCase})
       : super(AirportsInitial([]));
 
@@ -70,12 +72,27 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
   Stream<AirportsState> handleAddingToBookmark(
       AirportModel airportModel) async* {
     yield AirportsInitial(state.airports);
-    var airportsResult = await addAirportToBookmarkUseCase.invoke(airportModel);
 
-    if (airportsResult.isLeft)
-      yield AirportFailureState(
-          state.airports, airportsResult.left.getMessage());
+    if (airportModel.isInBookmark) {
+      var airportsResult =
+          await deleteAirportToBookmarkUseCase.invoke(airportModel);
 
-    if (airportsResult.isRight) yield AirportWasAddedToBookmark(state.airports);
+      if (airportsResult.isRight) {
+        airportModel.isInBookmark = false;
+        yield AirportWasDeletedFromBookmark(state.airports);
+      }
+    } else {
+      var airportsResult =
+          await addAirportToBookmarkUseCase.invoke(airportModel);
+
+      if (airportsResult.isLeft)
+        yield AirportFailureState(
+            state.airports, airportsResult.left.getMessage());
+
+      if (airportsResult.isRight) {
+        airportModel.isInBookmark = true;
+        yield AirportWasAddedToBookmark(state.airports);
+      }
+    }
   }
 }

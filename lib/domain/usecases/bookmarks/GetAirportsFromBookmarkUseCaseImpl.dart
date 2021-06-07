@@ -29,6 +29,9 @@ class GetAirportsFromBookmarkUseCaseImp extends GetAirportsFromBookmarkUseCase {
     var result = await baseRepository.getAirportsFromBookmark();
     if (result.isLeft) return Left(ErrorMessage(result.left.getMessage()));
     var model = result.right.map((e) => mapper.mapToModel(e)).toList();
+    model.forEach((element) {
+      element.isInBookmark = true;
+    });
     return Future.value(Right(model));
   }
 }

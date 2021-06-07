@@ -58,3 +58,10 @@ class AirportWasAddedToBookmark extends AirportsState {
   @override
   List<Object> get props => [];
 }
+
+class AirportWasDeletedFromBookmark extends AirportsState {
+  AirportWasDeletedFromBookmark(List<AirportModel> airports) : super(airports);
+
+  @override
+  List<Object> get props => [];
+}

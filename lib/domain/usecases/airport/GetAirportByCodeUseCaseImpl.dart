@@ -22,10 +22,15 @@ class GetAirportByCodeUseCaseImpl extends GetAirportByCodeUseCase {
   @override
   Future<Either<Failure, AirportModel>> invoke(String code) async {
     var airportsResult = await baseRepository.getAirportByCode(code);
+    var isInBookmarkResult = await baseRepository.isAirportInBookmark(code);
     if (airportsResult.isLeft)
       return Left(ErrorMessage(airportsResult.left.getMessage()));
 
     var airport = mapper.mapToModel(airportsResult.right);
+
+    if (isInBookmarkResult.isRight)
+      airport.isInBookmark = isInBookmarkResult.right;
+
     return Future.value(Right(airport));
   }
 }

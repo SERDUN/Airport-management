@@ -43,7 +43,7 @@ class AirportItemWidget extends StatelessWidget {
                   onPressed: () => onDelete(airportModel),
                   icon: Icon(
                     Icons.cancel,
-                    color: Colors.red,
+                    color: Colors.black,
                   ))
             ],
           ),
