@@ -6,6 +6,7 @@ import 'package:Aevius/domain/entity/models/error/failures.dart';
 import 'package:Aevius/domain/entity/models/weather_model.dart';
 import 'package:Aevius/domain/repository/base_repository.dart';
 import 'package:Aevius/domain/repository/location_repository.dart';
+import 'package:Aevius/domain/usecases/airport/IsAirportInBookmarkUseCase.dart';
 import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCase.dart';
 import 'package:Aevius/domain/usecases/bookmarks/DeleteAirportFromBookmarkUseCase.dart';
 import 'package:Aevius/domain/usecases/airport/GetNearbyAirportsUseCase.dart';
@@ -23,16 +24,15 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
   final GetWeatherUseCase getWeatherUseCase;
   final AddAirportToBookmarkUseCase addAirportToBookmarkUseCase;
   final DeleteAirportFromBookmarkUseCase deleteAirportToBookmarkUseCase;
+  final IsAirportInBookmarkUseCase isAirportInBookmarkUseCase;
 
   AirportsBloc(this.getNearbyAirportsUseCase, this.getWeatherUseCase,
-      this.deleteAirportToBookmarkUseCase,
+      this.deleteAirportToBookmarkUseCase, this.isAirportInBookmarkUseCase,
       {this.addAirportToBookmarkUseCase})
       : super(AirportsInitial([]));
 
   @override
-  Stream<AirportsState> mapEventToState(
-    AirportsEvent event,
-  ) async* {
+  Stream<AirportsState> mapEventToState(AirportsEvent event,) async* {
     if (event is LoadNearbyAirports) yield* handleGettingAirports();
     if (event is LoadWeatherForAirport)
       yield* handleGettingWeather(event.airport);
@@ -65,8 +65,10 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
       yield AirportFailureState(
           state.airports, weatherResult.left.getMessage());
 
-    if (weatherResult.isRight)
+    if (weatherResult.isRight) {
+      model.isInBookmark = await isAirportInBookmarkUseCase.invoke(model.code);
       yield WeatherLoaded(state.airports, weatherResult.right, model);
+    }
   }
 
   Stream<AirportsState> handleAddingToBookmark(
@@ -75,7 +77,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
 
     if (airportModel.isInBookmark) {
       var airportsResult =
-          await deleteAirportToBookmarkUseCase.invoke(airportModel);
+      await deleteAirportToBookmarkUseCase.invoke(airportModel);
 
       if (airportsResult.isRight) {
         airportModel.isInBookmark = false;
@@ -83,7 +85,7 @@ class AirportsBloc extends Bloc<AirportsEvent, AirportsState> {
       }
     } else {
       var airportsResult =
-          await addAirportToBookmarkUseCase.invoke(airportModel);
+      await addAirportToBookmarkUseCase.invoke(airportModel);
 
       if (airportsResult.isLeft)
         yield AirportFailureState(

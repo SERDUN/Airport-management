@@ -20,6 +20,8 @@ import 'package:Aevius/domain/repository/location_repository.dart';
 import 'package:Aevius/domain/repository/settings_repository.dart';
 import 'package:Aevius/domain/usecases/airport/GetAirportByCodeUseCase.dart';
 import 'package:Aevius/domain/usecases/airport/GetAirportByCodeUseCaseImpl.dart';
+import 'package:Aevius/domain/usecases/airport/IsAirportInBookmarkUseCase.dart';
+import 'package:Aevius/domain/usecases/airport/IsAirportsInBookmarkUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCase.dart';
 import 'package:Aevius/domain/usecases/bookmarks/AddAirportToBookmarkUseCaseImpl.dart';
 import 'package:Aevius/domain/usecases/bookmarks/DeleteAirportFromBookmarkUseCase.dart';
@@ -133,6 +135,11 @@ class DiInjector {
               GetIt.I.get<SettingRepository>(),
             ));
 
+    GetIt.I.registerFactory<IsAirportInBookmarkUseCase>(
+        () => IsAirportInBookmarkUseCaseImpl(
+              GetIt.I.get<BaseRepository>(),
+            ));
+
     GetIt.I.registerFactory<GetAirportByCodeUseCase>(() =>
         GetAirportByCodeUseCaseImpl(GetIt.I.get<BaseRepository>(),
             GetIt.I.get<Mapper<AirportDetailsDTO, AirportModel>>()));
@@ -211,7 +218,9 @@ class DiInjector {
             GetIt.I.get<GetNearbyAirportsUseCase>(),
             GetIt.I.get<GetWeatherUseCase>(),
             GetIt.I.get<DeleteAirportFromBookmarkUseCase>(),
-            addAirportToBookmarkUseCase: GetIt.I.get<AddAirportToBookmarkUseCase>(),
+            GetIt.I.get<IsAirportInBookmarkUseCase>(),
+            addAirportToBookmarkUseCase:
+                GetIt.I.get<AddAirportToBookmarkUseCase>(),
           ),
           child: AirportsPage(),
         ));

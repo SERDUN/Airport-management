@@ -25,6 +25,8 @@ class GeWeatherUseCaseImpl extends GetWeatherUseCase {
   @override
   Future<Either<Failure, WeatherModel>> invoke(String airportCode) async {
     var weatherResult = await baseRepository.getWeatherByCode(airportCode);
+
+
     if (weatherResult.isLeft)
       return Left(ErrorMessage(weatherResult.left.getMessage()));
 

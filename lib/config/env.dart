@@ -4,8 +4,8 @@ enum URLS { NEARBY_AIRPORTS, DETAILS_AIRPORT, WEATHER }
 var aviationKey = "235ba8-7ffa37";
 var weatherKey = "bGr_A_t2rFZ1_n3Vhi1iiXP544wdszLf1ZsxcC5a89Q";
 //Your account is in the free demo mode until Jun 12, 2021. To buy a subscription plan, click here.
-var airportDetailsKey = "e4bc8ef8c3";
-var airportDetailsSecret = "94f04c48cfce668";
+var airportDetailsKey = "704c51d135";
+var airportDetailsSecret = "455290521c81d08";
 
 
 //system
